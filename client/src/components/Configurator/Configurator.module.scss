@@ -1,0 +1,78 @@
+@use "sass:color";
+@use "../../styles/variables";
+.root {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    height: inherit;
+    .configurator {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+        flex: 2;
+        &__header {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: end;
+            &__left {
+                display: flex;
+                flex-direction: column;
+                gap: 0.2em;
+                h2 {
+                    font-size: 1.5em;
+                    font-weight: 500;
+                }
+                .mandatory {
+                    color: variables.$attention-color;
+                }
+            }
+            &__right {
+                display: flex;
+                .input {
+                    width: 100%;
+                    background-color: variables.$primary-color-light;
+                    border: 1px solid variables.$border-color;
+                    border-radius: 0.2em;
+                    padding: 0.2em 0.8em;
+                    transition: 200ms;
+                    &:hover {
+                        border-color: variables.$secondary-color-black;
+                    }
+                    &:focus {
+                        border-color: variables.$primary-color-black;
+                    }
+                    &::placeholder {
+                        user-select: none;
+                        color: color.scale(variables.$text-color-black, $lightness: 40%);
+                    }
+                    &::-webkit-outer-spin-button,
+                    &::-webkit-inner-spin-button {
+                        -webkit-appearance: none;
+                        margin: 0;
+                    }
+
+                    &[list] {
+                        // text-transform: capitalize;
+                        &::-webkit-calendar-picker-indicator,
+                        ::-webkit-list-button {
+                            cursor: text;
+                            opacity: 0;
+                            font-size: 0em;
+                        }
+                    }
+                }
+            }
+        }
+        &__body {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15em;
+        }
+    }
+    .aside {
+        flex: 1;
+        background-color: variables.$primary-color-light;
+        border-radius: 0.5em;
+    }
+}

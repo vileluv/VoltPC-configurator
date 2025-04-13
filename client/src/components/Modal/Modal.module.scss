@@ -1,0 +1,63 @@
+@use "sass:color";
+@use "../../styles/variables";
+.root {
+    .modal,
+    .overlay {
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        position: fixed;
+        z-index: 1;
+    }
+    .overlay {
+        background: rgba(variables.$primary-color-black, 0.8);
+    }
+    .content {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: variables.$primary-color-light;
+        padding: 1rem;
+        border-radius: 0.15rem;
+        max-width: 60%;
+        min-width: 20%;
+        max-height: 60%;
+        min-height: 20%;
+        z-index: 1;
+        .relative {
+            position: relative;
+            .close {
+                position: absolute;
+                top: 0;
+                right: 0;
+                cursor: pointer;
+                transition: 200ms;
+                &:hover {
+                    transform: rotate(180deg);
+                }
+            }
+        }
+    }
+    .togglebtn {
+        font-size: 0.8em;
+        background: none;
+        border: 2px solid variables.$secondary-color-black;
+        line-height: 1;
+        padding: 1em 2em;
+        color: variables.$text-color-black;
+        transition: 200ms;
+
+        &:hover {
+            border-color: color.scale(variables.$primary-color-green, $blackness: 40%);
+            color: color.scale(variables.$text-color-black, $blackness: 100%);
+            box-shadow: inset 7em 0 0 0 variables.$primary-color-green;
+        }
+        &:active {
+            box-shadow: inset 10em 0 0 0 variables.$primary-color-green;
+        }
+    }
+}

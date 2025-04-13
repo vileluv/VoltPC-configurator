@@ -1,0 +1,45 @@
+@use "sass:color";
+@use "../../styles/variables";
+.root {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid variables.$border-color;
+    border-radius: 0.2em;
+    padding: 1em;
+    height: 5em;
+    background-color: variables.$primary-color-light;
+    transition: 50ms;
+
+    .info {
+        display: flex;
+        gap: 0.2em;
+        .require {
+            &::after {
+                content: "*";
+                font-size: 1.5em;
+                color: variables.$attention-color;
+                position: absolute;
+            }
+        }
+    }
+    .body {
+    }
+    .actions {
+        .modal {
+            padding: 0.8em;
+
+            &__header {
+                padding-bottom: 1em;
+                border-bottom: 1px solid variables.$border-color;
+                .title {
+                    font-size: 2em;
+                    font-weight: 600;
+                }
+            }
+            &__body {
+            }
+        }
+    }
+}

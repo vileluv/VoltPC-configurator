@@ -1,0 +1,39 @@
+@use "./variables";
+html,
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    background-color: variables.$bg-light;
+    color: variables.$text-color-black;
+    scroll-behavior: smooth;
+    font-size: variables.$global-font-size;
+    line-height: 1.2;
+    .active-modal {
+        overflow-y: hidden;
+    }
+}
+
+button,
+a,
+a:hover {
+    all: unset;
+    cursor: pointer;
+}
+input {
+    all: unset;
+    cursor: text;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    all: unset;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none !important;
+}

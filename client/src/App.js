@@ -1,25 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext, useEffect, useState } from "react";
+import { BrowserRouter } from "react-router-dom";
+import { observer } from "mobx-react-lite";
+
+import { Context } from "./index.js";
+import "./styles/globals.scss";
+import Spinner from "./components/Spinner/index.js";
+import AppRouter from "./components/AppRouter/index.js";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [loading, setLoading] = useState(true);
+    const { user } = useContext(Context);
+    useEffect(() => {
+        user.setIsAuth(true);
+        setLoading(false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    if (loading) {
+        return <Spinner />;
+    }
+    return (
+        <BrowserRouter>
+            <AppRouter />
+        </BrowserRouter>
+    );
 }
 
-export default App;
+export default observer(App);

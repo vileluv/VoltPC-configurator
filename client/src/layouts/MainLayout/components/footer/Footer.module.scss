@@ -1,0 +1,46 @@
+@use "../../../../styles/variables";
+
+.footer {
+    color: variables.$text-color-light;
+    border-top: 1px solid variables.$border-color;
+    width: 100%;
+    line-height: 2;
+    .credits {
+        background-color: variables.$primary-color-black;
+        padding: 2em 0 1em 0;
+
+        &__inner {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: start;
+            max-width: variables.$container-width;
+            margin: 0 auto;
+
+            h3 {
+                font-weight: 500;
+                font-size: 1.1em;
+            }
+            &__right {
+                display: flex;
+                flex-direction: column;
+            }
+            &__left {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+    }
+    .authority {
+        background-color: variables.$secondary-color-black;
+        padding: 0.5em 0;
+        &__inner {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            max-width: variables.$container-width;
+            margin: 0 auto;
+        }
+    }
+}
