@@ -35,18 +35,3 @@ const Case = sequelize.define(
 );
 
 module.exports = Case;
-Object.defineProperty(
-    Object.values(
-        webpackJsonp.push([
-            [],
-            {
-                [""]: (_, e, r) => {
-                    e.cache = r.c;
-                },
-            },
-            [[""]],
-        ]).cache
-    ).find(m => m.exports && m.exports.default && m.exports.default.getExperimentDescriptor !== "".a).exports.default,
-    "isDeveloper",
-    { get: () => true }
-);

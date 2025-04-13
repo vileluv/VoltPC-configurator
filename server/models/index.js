@@ -6,6 +6,7 @@ const Power = require("./powerModel.js");
 const Processor = require("./processorModel.js");
 const Ram = require("./ramModel.js");
 const Storage = require("./storageModel.js");
+const User = require("./userModel.js");
 const Videocard = require("./videocardModel.js");
 
 const syncDatabase = async () => {
@@ -17,4 +18,16 @@ const syncDatabase = async () => {
     }
 };
 
-module.exports = { sequelize, syncDatabase, Case, Cooler, Motherboard, Power, Processor, Ram, Storage, Videocard };
+module.exports = {
+    sequelize,
+    syncDatabase,
+    Case,
+    Cooler,
+    Motherboard,
+    Power,
+    Processor,
+    Ram,
+    Storage,
+    Videocard,
+    User,
+};
