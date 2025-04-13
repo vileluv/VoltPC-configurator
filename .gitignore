@@ -10,3 +10,5 @@ static
 # vscode
 .vscode
 
+#db
+*.sqlite
