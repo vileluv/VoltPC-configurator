@@ -6,7 +6,7 @@ function Header() {
     return (
         <header className={styles.header}>
             <div className={styles.header__inner}>
-                <h1 className={styles.logo}>Ironbook</h1>
+                <h1 className={styles.logo}>Конфигуратор</h1>
                 <nav className={styles.nav}>
                     <Link to="/">Конфигуратор</Link>
                     <Link to="/">Конфигуратор</Link>
