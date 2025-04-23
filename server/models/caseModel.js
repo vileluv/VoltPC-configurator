@@ -8,7 +8,17 @@ const Case = sequelize.define(
         name: { type: DataTypes.STRING, allowNull: false },
         brand: { type: DataTypes.STRING, allowNull: false },
         price: { type: DataTypes.FLOAT, allowNull: false },
-        releaseDate: { type: DataTypes.DATE, allowNull: false },
+        releaseDate: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            get() {
+                const value = this.getDataValue("releaseDate");
+                return new Date(value).getDate();
+            },
+            set(value) {
+                this.setDataValue("releaseDate", new Date(value));
+            },
+        },
         typefactor: { type: DataTypes.STRING, allowNull: false },
         motherboardFormfactors: {
             type: DataTypes.TEXT,

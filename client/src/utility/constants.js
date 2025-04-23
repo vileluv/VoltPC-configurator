@@ -12,3 +12,8 @@ export const ITEMS_LIST = [
     { type: "cooler", name: "Кулер", require: false },
     { type: "storage", name: "Хранилище", require: false },
 ];
+
+export const FILTER_TYPES = {
+    interval: "interval",
+    selector: "selector",
+};

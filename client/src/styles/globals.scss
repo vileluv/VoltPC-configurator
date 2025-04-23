@@ -1,7 +1,16 @@
 @use "./variables";
+@font-face {
+    font-family: "Overpass";
+    src: local("Overpass"), url(../fonts/Overpass-VariableFont.ttf) format("truetype");
+}
+@font-face {
+    font-family: "Overpass";
+    src: local("Overpass"), url(../fonts/Overpass-Italic-VariableFont.ttf) format("truetype");
+    font-style: italic;
+}
 html,
 body {
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: "Overpass", Helvetica, sans-serif;
     background-color: variables.$bg-light;
     color: variables.$text-color-black;
     scroll-behavior: smooth;

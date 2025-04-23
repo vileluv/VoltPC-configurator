@@ -1,0 +1,52 @@
+@use "sass:color";
+@use "../../styles/variables";
+.root {
+    display: flex;
+    flex-direction: column;
+    width: 15em;
+    max-width: 15em;
+    .header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.8em;
+        cursor: pointer;
+
+        .title {
+            font-weight: 500;
+        }
+        .hide {
+            transition: transform 200ms;
+            &__active {
+                transform: rotate(180deg);
+            }
+        }
+    }
+    .body {
+        max-height: 15em;
+        transition: max-height 300ms ease, opacity 400ms ease;
+        overflow-y: auto;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        opacity: 1;
+        margin-bottom: 0.8em;
+        &__hide {
+            max-height: 0em;
+            overflow-y: hidden;
+            opacity: 0;
+        }
+        .interval {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2em;
+        }
+        .selector {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8em;
+        }
+    }
+}

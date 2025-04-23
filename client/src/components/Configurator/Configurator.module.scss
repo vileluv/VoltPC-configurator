@@ -25,43 +25,11 @@
                 }
                 .mandatory {
                     color: variables.$attention-color;
+                    font-style: italic;
                 }
             }
             &__right {
                 display: flex;
-                .input {
-                    width: 100%;
-                    background-color: variables.$primary-color-light;
-                    border: 1px solid variables.$border-color;
-                    border-radius: 0.2em;
-                    padding: 0.2em 0.8em;
-                    transition: 200ms;
-                    &:hover {
-                        border-color: variables.$secondary-color-black;
-                    }
-                    &:focus {
-                        border-color: variables.$primary-color-black;
-                    }
-                    &::placeholder {
-                        user-select: none;
-                        color: color.scale(variables.$text-color-black, $lightness: 40%);
-                    }
-                    &::-webkit-outer-spin-button,
-                    &::-webkit-inner-spin-button {
-                        -webkit-appearance: none;
-                        margin: 0;
-                    }
-
-                    &[list] {
-                        // text-transform: capitalize;
-                        &::-webkit-calendar-picker-indicator,
-                        ::-webkit-list-button {
-                            cursor: text;
-                            opacity: 0;
-                            font-size: 0em;
-                        }
-                    }
-                }
             }
         }
         &__body {

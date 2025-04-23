@@ -8,12 +8,21 @@ const Ram = sequelize.define(
         name: { type: DataTypes.STRING, allowNull: false },
         brand: { type: DataTypes.STRING, allowNull: false },
         price: { type: DataTypes.FLOAT, allowNull: false },
-        releaseDate: { type: DataTypes.DATE, allowNull: false },
+        releaseDate: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            get() {
+                const value = this.getDataValue("releaseDate");
+                return new Date(value).getDate();
+            },
+            set(value) {
+                this.setDataValue("releaseDate", new Date(value));
+            },
+        },
         formfactor: { type: DataTypes.STRING, allowNull: false },
         memoryType: { type: DataTypes.STRING, allowNull: false },
         memoryVolume: { type: DataTypes.INTEGER, allowNull: false },
         oneMemoryVolume: { type: DataTypes.INTEGER, allowNull: false },
-        moduleAmount: { type: DataTypes.INTEGER, allowNull: false },
         moduleAmount: { type: DataTypes.INTEGER, allowNull: false },
         clockRate: { type: DataTypes.INTEGER, allowNull: false },
         bandwidth: { type: DataTypes.INTEGER, allowNull: false },

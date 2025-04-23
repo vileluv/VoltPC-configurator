@@ -2,7 +2,16 @@ import React, { useContext, useEffect, useState } from "react";
 import styles from "./Modal.module.scss";
 import { observer } from "mobx-react-lite";
 import { Context } from "../../index.js";
-function Modal({ children, propUseEffect = () => {}, btnName = "Button", ...props }) {
+import Spinner from "../Spinner/index.js";
+import Button from "../common/Button/index.js";
+function Modal({
+    children,
+    propsOnClick = () => {},
+    propUseEffect = () => {},
+    btnName = "Button",
+    loading = false,
+    ...props
+}) {
     const [modal, setModal] = useState(false);
     useEffect(() => {
         if (modal) {
@@ -17,44 +26,53 @@ function Modal({ children, propUseEffect = () => {}, btnName = "Button", ...prop
     const handleContent = e => {
         e.stopPropagation();
     };
-    if (modal) {
+    if (modal && !loading) {
         document.body.classList.add("active-modal");
     } else {
         document.body.classList.remove("active-modal");
     }
     return (
         <div className={styles.root} {...props}>
-            <button onClick={toggleModal} className={styles.togglebtn}>
+            <Button
+                onClick={() => {
+                    toggleModal();
+                    propsOnClick();
+                }}
+            >
                 {btnName}
-            </button>
-            {modal && (
-                <div className={styles.modal}>
-                    <div className={styles.overlay} onClick={toggleModal}></div>
-                    <div className={styles.content} onClick={handleContent}>
-                        <div className={styles.relative}>
-                            <svg
-                                className={styles.close}
-                                onClick={toggleModal}
-                                fill="#000000"
-                                width="16px"
-                                height="16px"
-                                viewBox="0 0 16 16"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <g strokeWidth="0"></g>
-                                <g strokeLinecap="round" strokeLinejoin="round"></g>
-                                <g>
-                                    <path
-                                        d="M0 14.545L1.455 16 8 9.455 14.545 16 16 14.545 9.455 8 16 1.455 14.545 0 8 6.545 1.455 0 0 1.455 6.545 8z"
-                                        fillRule="evenodd"
-                                    ></path>
-                                </g>
-                            </svg>
+            </Button>
+            {loading ? (
+                <Spinner isLoading={loading} />
+            ) : (
+                modal && (
+                    <div className={styles.modal}>
+                        <div className={styles.overlay} onClick={toggleModal}></div>
+                        <div className={styles.content} onClick={handleContent}>
+                            <div className={styles.relative}>
+                                <svg
+                                    className={styles.close}
+                                    onClick={toggleModal}
+                                    fill="#000000"
+                                    width="16px"
+                                    height="16px"
+                                    viewBox="0 0 16 16"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <g strokeWidth="0"></g>
+                                    <g strokeLinecap="round" strokeLinejoin="round"></g>
+                                    <g>
+                                        <path
+                                            d="M0 14.545L1.455 16 8 9.455 14.545 16 16 14.545 9.455 8 16 1.455 14.545 0 8 6.545 1.455 0 0 1.455 6.545 8z"
+                                            fillRule="evenodd"
+                                        ></path>
+                                    </g>
+                                </svg>
 
-                            {children}
+                                {children}
+                            </div>
                         </div>
                     </div>
-                </div>
+                )
             )}
         </div>
     );

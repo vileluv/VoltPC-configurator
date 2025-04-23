@@ -39,6 +39,14 @@
                 }
             }
             &__body {
+                margin-top: 1em;
+                display: flex;
+                flex-direction: row;
+                gap: 1em;
+                .filters {
+                }
+                .hardwares {
+                }
             }
         }
     }

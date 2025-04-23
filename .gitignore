@@ -11,4 +11,4 @@ static
 .vscode
 
 #db
-*.sqlite
+*.sqlite*

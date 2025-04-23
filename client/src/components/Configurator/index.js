@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "./Configurator.module.scss";
 import { ITEMS_LIST } from "../../utility/constants.js";
 import Item from "../Item/index.js";
+import Input from "../common/Input/index.js";
 function Configurator() {
     const [confCode, setConfCode] = useState("");
     return (
@@ -13,8 +14,7 @@ function Configurator() {
                         <span className={styles.mandatory}>* Обязательные комплектующие</span>
                     </div>
                     <div className={styles.configurator__header__right}>
-                        <input
-                            className={styles.input}
+                        <Input
                             value={confCode}
                             onChange={({ target }) => {
                                 setConfCode(target.value);
@@ -25,9 +25,7 @@ function Configurator() {
                 </div>
                 <div className={styles.configurator__body}>
                     {ITEMS_LIST.map(({ type, name, require }) => (
-                        <Item key={type} itemType={type} require={require}>
-                            {name}
-                        </Item>
+                        <Item key={type} itemName={name} itemType={type} require={require} />
                     ))}
                 </div>
             </div>

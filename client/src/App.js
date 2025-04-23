@@ -15,14 +15,8 @@ function App() {
         setLoading(false);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    if (loading) {
-        return <Spinner />;
-    }
-    return (
-        <BrowserRouter>
-            <AppRouter />
-        </BrowserRouter>
-    );
+
+    return <BrowserRouter>{loading ? <Spinner isLoading={loading} /> : <AppRouter />}</BrowserRouter>;
 }
 
 export default observer(App);
