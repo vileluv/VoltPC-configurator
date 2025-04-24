@@ -27,8 +27,16 @@
     .body {
     }
     .actions {
+        display: flex;
+        flex-direction: row;
+        gap: 1em;
+        justify-content: end;
+        .deletebtn {
+            font-size: 0.8em;
+        }
         .modal {
             padding: 0.8em;
+            position: relative;
 
             &__header {
                 padding-bottom: 1em;
@@ -42,10 +50,18 @@
                 margin-top: 1em;
                 display: flex;
                 flex-direction: row;
-                gap: 1em;
+                gap: 5em;
                 .filters {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1em;
+                    width: 15em;
                 }
                 .hardwares {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1em;
+                    width: 55em;
                 }
             }
         }

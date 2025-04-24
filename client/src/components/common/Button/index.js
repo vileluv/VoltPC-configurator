@@ -1,15 +1,17 @@
 import React from "react";
 import styles from "./Button.module.scss";
-function Button({ children, onClick, ...props }) {
+import multiModuleStyles from "../../../utility/multiModuleStyles.js";
+function Button({ children, onClick = () => {}, danger, className, disabled, ...props }) {
     return (
         <button
             onClick={() => {
                 onClick();
             }}
-            className={styles.root}
+            className={multiModuleStyles(styles.root, danger ? styles.danger : "", className)}
+            disabled={disabled}
             {...props}
         >
-            {children}
+            <span>{children}</span>
         </button>
     );
 }

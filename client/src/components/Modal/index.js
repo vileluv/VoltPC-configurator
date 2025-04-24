@@ -1,24 +1,31 @@
 import React, { useContext, useEffect, useState } from "react";
 import styles from "./Modal.module.scss";
-import { observer } from "mobx-react-lite";
-import { Context } from "../../index.js";
 import Spinner from "../Spinner/index.js";
 import Button from "../common/Button/index.js";
+import { observer } from "mobx-react-lite";
 function Modal({
     children,
     propsOnClick = () => {},
     propUseEffect = () => {},
+    contentRef,
+    customModalValue = false,
     btnName = "Button",
     loading = false,
+    withButton = true,
     ...props
 }) {
     const [modal, setModal] = useState(false);
+
     useEffect(() => {
         if (modal) {
             propUseEffect();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [modal]);
+    useEffect(() => {
+        setModal(customModalValue);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [customModalValue]);
 
     const toggleModal = () => {
         setModal(!modal);
@@ -33,21 +40,24 @@ function Modal({
     }
     return (
         <div className={styles.root} {...props}>
-            <Button
-                onClick={() => {
-                    toggleModal();
-                    propsOnClick();
-                }}
-            >
-                {btnName}
-            </Button>
+            {withButton && (
+                <Button
+                    onClick={() => {
+                        toggleModal();
+                        propsOnClick();
+                    }}
+                    className={styles.modalbtn}
+                >
+                    {btnName}
+                </Button>
+            )}
             {loading ? (
                 <Spinner isLoading={loading} />
             ) : (
                 modal && (
                     <div className={styles.modal}>
                         <div className={styles.overlay} onClick={toggleModal}></div>
-                        <div className={styles.content} onClick={handleContent}>
+                        <div className={styles.content} onClick={handleContent} ref={contentRef}>
                             <div className={styles.relative}>
                                 <svg
                                     className={styles.close}
@@ -78,4 +88,4 @@ function Modal({
     );
 }
 
-export default Modal;
+export default observer(Modal);

@@ -1,27 +1,104 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styles from "./FilterComponent.module.scss";
 import multiModuleStyles from "../../utility/multiModuleStyles.js";
 import Checkbox from "../common/Checkbox/index.js";
 import Input from "../common/Input/index.js";
 import { observer } from "mobx-react-lite";
 import { FILTER_TYPES } from "../../utility/constants.js";
+import { Context } from "../../index.js";
 
-function FilterComponent({ title = "", type = "", interval = { min: null, max: null }, selector = [] }) {
+function FilterComponent({ type, title = "", filterType = "", interval = { min: null, max: null }, selector = [] }) {
     const hideRef = useRef(null);
+    const { filter } = useContext(Context);
     const [hide, setHide] = useState(false);
     const [selected, setSelected] = useState([]);
+    const [intervalData, setIntervalData] = useState(interval);
+    const isFirstRender = useRef(true);
+    const checkFilters = filter.filters;
+    useEffect(() => {
+        if (isFirstRender.current) {
+            return;
+        }
 
+        let currentInterval;
+        if (intervalData.min > intervalData.max) {
+            currentInterval = { min: Number(intervalData.max), max: Number(intervalData.min) };
+        } else currentInterval = { min: Number(intervalData.min), max: Number(intervalData.max) };
+
+        filter.addFilters(type, currentInterval);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [intervalData.min, intervalData.max]);
+    useEffect(() => {
+        if (isFirstRender.current) {
+            return;
+        }
+        if (selected.length === 0) {
+            filter.deleteFilter(type);
+            return;
+        }
+        filter.addFilters(type, selected);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selected]);
+    useEffect(() => {
+        if (Object.keys(checkFilters).length === 0) {
+            setIntervalData(interval);
+            setSelected([]);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [checkFilters]);
+
+    useEffect(() => {
+        isFirstRender.current = false;
+    }, []);
+
+    const handleChange = e => {
+        const { name, value } = e.target;
+        setIntervalData(prev => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+    const handleBlur = () => {
+        if (Number(intervalData.min) < interval.min || Number(intervalData.min) > interval.max)
+            setIntervalData(prev => ({
+                ...prev,
+                min: interval.min,
+            }));
+        if (Number(intervalData.max) > interval.max || Number(intervalData.max) < interval.min)
+            setIntervalData(prev => ({
+                ...prev,
+                max: interval.max,
+            }));
+    };
     const toggleCheckbox = option => {
-        setSelected(prev => (prev.includes(option) ? prev.filter(o => o !== option) : [...prev, option]));
+        setSelected(prev => (prev.includes(option) ? prev.filter(f => f !== option) : [...prev, option]));
     };
     const switchType = () => {
-        switch (type) {
+        switch (filterType) {
             case FILTER_TYPES.interval: {
                 if (interval.min === null) return <></>;
                 return (
                     <div className={styles.interval}>
-                        <Input placeholder={interval.min} type="number"></Input>
-                        <Input placeholder={interval.max} type="number"></Input>
+                        <Input
+                            name="min"
+                            value={intervalData.min}
+                            onChange={handleChange}
+                            type="number"
+                            min={intervalData.min}
+                            autoComplete="off"
+                            onBlur={handleBlur}
+                        ></Input>
+                        <Input
+                            name="max"
+                            value={intervalData.max}
+                            onChange={handleChange}
+                            type="number"
+                            max={intervalData.max}
+                            autoComplete="off"
+                            onBlur={handleBlur}
+                        ></Input>
                     </div>
                 );
             }
@@ -43,7 +120,7 @@ function FilterComponent({ title = "", type = "", interval = { min: null, max: n
                 );
             }
             default: {
-                console.error("Unallowed filter type: " + type);
+                console.error("Unallowed filter type: " + filterType);
                 return <></>;
             }
         }

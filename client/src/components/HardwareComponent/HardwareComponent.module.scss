@@ -1,4 +1,35 @@
 @use "sass:color";
 @use "../../styles/variables";
 .root {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid variables.$border-color;
+    padding: 1em 2em;
+    font-size: 1.1em;
+    height: 5em;
+    * {
+        width: 100%;
+    }
+
+    .description {
+        text-align: center;
+        text-transform: capitalize;
+        text-overflow: ellipsis;
+        word-break: break-all;
+    }
+    .btnwrapper {
+        flex: 0;
+        .btn {
+            font-size: 0.8rem;
+            width: fit-content;
+        }
+        .current {
+            padding-left: 1em;
+            padding-right: 2em;
+            color: color.scale(variables.$primary-color-green, $blackness: 40%);
+        }
+    }
 }

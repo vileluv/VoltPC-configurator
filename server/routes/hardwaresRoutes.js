@@ -9,6 +9,7 @@ hardwares.forEach(element => {
     if (!controller) return;
     router.get("/", controller.getAll);
     router.get("/:id", controller.getOne);
+    router.post("/filters", controller.getAllWithFilters);
     router.post("/", checkHandler(userRoles.ADMIN), controller.create);
     hardwaresRoutes[element] = router;
 });

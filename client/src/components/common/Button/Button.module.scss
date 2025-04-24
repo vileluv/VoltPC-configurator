@@ -1,20 +1,73 @@
 @use "sass:color";
 @use "../../../styles/variables";
 .root {
-    font-size: 0.8em;
+    position: relative;
     background: none;
     border: 2px solid variables.$secondary-color-black;
     line-height: 1;
     padding: 1em 2em 0.8em 2em;
     color: variables.$text-color-black;
     transition: 200ms;
+    text-align: center;
+    overflow: hidden;
+    &:disabled {
+        &::before {
+            background-color: inherit;
+        }
+    }
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-color: variables.$primary-color-green;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 300ms ease;
+        z-index: 0;
+    }
 
-    &:hover {
+    &:hover::before {
+        transform: scaleX(0.7);
+    }
+
+    &:active::before {
+        transform: scaleX(1);
+    }
+
+    &:hover,
+    &:active {
         border-color: color.scale(variables.$primary-color-green, $blackness: 40%);
         color: color.scale(variables.$text-color-black, $blackness: 100%);
-        box-shadow: inset 7em 0 0 0 variables.$primary-color-green;
     }
+
+    * {
+        position: relative;
+        z-index: 1;
+    }
+}
+.danger {
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-color: variables.$attention-color;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 300ms ease;
+        z-index: 0;
+    }
+
+    &:hover::before {
+        transform: scaleX(0.7);
+    }
+
+    &:active::before {
+        transform: scaleX(1);
+    }
+
+    &:hover,
     &:active {
-        box-shadow: inset 10em 0 0 0 variables.$primary-color-green;
+        border-color: color.scale(variables.$attention-color, $blackness: 40%);
+        color: color.scale(variables.$text-color-black, $blackness: 100%);
     }
 }
