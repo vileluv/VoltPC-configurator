@@ -27,7 +27,12 @@ const Videocard = sequelize.define(
             allowNull: false,
             get() {
                 const value = this.getDataValue("connectors");
-                return value ? JSON.parse(value) : [];
+                try {
+                    return value ? JSON.parse(value) : [];
+                } catch (e) {
+                    console.error(e);
+                    return [];
+                }
             },
             set(value) {
                 this.setDataValue("connectors", JSON.stringify(value));
@@ -37,6 +42,7 @@ const Videocard = sequelize.define(
         clockSpeed: { type: DataTypes.INTEGER, allowNull: false },
         maxResolution: { type: DataTypes.STRING, allowNull: false },
         maxMonitors: { type: DataTypes.STRING, allowNull: false },
+        width: { type: DataTypes.INTEGER, allowNull: false },
         size: { type: DataTypes.STRING, allowNull: false },
         weight: { type: DataTypes.FLOAT, allowNull: false },
         powerPin: { type: DataTypes.INTEGER, allowNull: false },
@@ -44,6 +50,15 @@ const Videocard = sequelize.define(
         memorySize: { type: DataTypes.INTEGER, allowNull: false },
         memoryType: { type: DataTypes.STRING, allowNull: false },
         memoryClock: { type: DataTypes.INTEGER, allowNull: false },
+        fullName: {
+            type: DataTypes.VIRTUAL,
+            get() {
+                return `${this.processorBrand} ${this.name} ${this.brand} `;
+            },
+            set(value) {
+                console.error("Do not try to set the `fullName` value!");
+            },
+        },
     },
     { timestamps: false }
 );

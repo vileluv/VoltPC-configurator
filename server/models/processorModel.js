@@ -29,19 +29,18 @@ const Processor = sequelize.define(
         cacheL1: { type: DataTypes.STRING, allowNull: false },
         cacheL2: { type: DataTypes.STRING, allowNull: false },
         cacheL3: { type: DataTypes.STRING, allowNull: false },
-        isIntegratedVideo: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-            get() {
-                const value = this.getDataValue("isIntegratedVideo");
-                return value ? "Да" : "Нет";
-            },
-            set(value) {
-                this.setDataValue("isIntegratedVideo", value);
-            },
-        },
+        isIntegratedVideo: { type: DataTypes.STRING, allowNull: false },
         integratedVideoName: { type: DataTypes.STRING, allowNull: true },
         postType: { type: DataTypes.STRING, allowNull: false },
+        fullName: {
+            type: DataTypes.VIRTUAL,
+            get() {
+                return `${this.brand} ${this.model} ${this.name} `;
+            },
+            set(value) {
+                console.error("Do not try to set the `fullName` value!");
+            },
+        },
     },
     { timestamps: false }
 );

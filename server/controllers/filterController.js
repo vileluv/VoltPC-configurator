@@ -14,19 +14,25 @@ exports.getFilters = async (req, res, next) => {
         if (!filterField) continue;
 
         switch (filterField.type) {
+            case FILTER_TYPES.selectorJSON:
             case FILTER_TYPES.selector: {
                 const items = await model.findAll({
                     attributes: [field],
                     group: [field],
                 });
-                const itemsArray = items.map(item => item[field]).filter(f => f !== null);
+
+                const itemsArray = items
+                    .map(item => item[field])
+                    .filter(f => f !== null)
+                    .flat();
                 if (itemsArray.length === 0) {
                     filterField.values = undefined;
                     break;
                 }
-                filterField.values = itemsArray;
+                filterField.values = [...new Set(itemsArray)];
                 break;
             }
+
             case FILTER_TYPES.interval: {
                 const items = await model.findOne({
                     attributes: [

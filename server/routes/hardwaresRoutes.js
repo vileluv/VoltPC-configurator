@@ -7,10 +7,9 @@ hardwares.forEach(element => {
     const router = express.Router();
     const controller = controllers[element];
     if (!controller) return;
-    router.get("/", controller.getAll);
+    router.post("/", controller.getAllWithFilters);
     router.get("/:id", controller.getOne);
-    router.post("/filters", controller.getAllWithFilters);
-    router.post("/", checkHandler(userRoles.ADMIN), controller.create);
+    router.post("/create", checkHandler(userRoles.ADMIN), controller.create);
     hardwaresRoutes[element] = router;
 });
 module.exports = hardwaresRoutes;

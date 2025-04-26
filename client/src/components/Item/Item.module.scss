@@ -11,10 +11,11 @@
     height: 5em;
     background-color: variables.$primary-color-light;
     transition: 50ms;
-
+    gap: 1em;
     .info {
         display: flex;
         gap: 0.2em;
+        width: 11em;
         .require {
             &::after {
                 content: "*";
@@ -25,6 +26,13 @@
         }
     }
     .body {
+        display: flex;
+        justify-content: start;
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 18em;
     }
     .actions {
         display: flex;
@@ -57,11 +65,70 @@
                     gap: 1em;
                     width: 15em;
                 }
-                .hardwares {
+                .wrapper {
                     display: flex;
                     flex-direction: column;
-                    gap: 1em;
-                    width: 55em;
+                    .options {
+                        display: flex;
+                        justify-content: space-between;
+                        .sorting {
+                            display: flex;
+                            align-items: center;
+                            .sorttitle {
+                                margin-right: 1em;
+                            }
+                            .sortitem {
+                                user-select: none;
+                                margin-right: 0.5em;
+                                display: flex;
+                                cursor: pointer;
+                                text-wrap: nowrap;
+                                font-size: 0.9em;
+                                align-items: center;
+                                &:hover {
+                                    color: color.scale(variables.$primary-color-green, $blackness: 40%);
+                                }
+                                .arrow {
+                                    opacity: 0;
+                                    transition: transform 200ms ease, opacity 200ms ease;
+                                    &__visible {
+                                        opacity: 1;
+                                    }
+                                    &__reversed {
+                                        transform: rotate(180deg);
+                                    }
+                                }
+                            }
+                        }
+                        .flipping {
+                            display: flex;
+                            flex-direction: row;
+
+                            .back {
+                                border-right: 0;
+                            }
+                            .setpage {
+                                width: 2em;
+                                border: 2px solid variables.$secondary-color-black;
+                                border-right: 1px solid variables.$secondary-color-black;
+                                border-left: 1px solid variables.$secondary-color-black;
+                                text-align: center;
+                            }
+                            .forward {
+                                border-left: 0;
+                            }
+                            .back,
+                            .forward {
+                                padding: 0.5em;
+                            }
+                        }
+                    }
+                    .hardwares {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1em;
+                        width: 55em;
+                    }
                 }
             }
         }

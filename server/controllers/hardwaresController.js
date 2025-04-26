@@ -2,37 +2,46 @@ const { Op } = require("sequelize");
 const models = require("../models/index.js");
 const { hardwares, FILTER_MODEL_TYPES, FILTER_TYPES } = require("../utility/constants.js");
 
+const MAX_LIMIT = 100;
+function validateNumber(num) {
+    const validNum = parseInt(num, 10);
+    if (isNaN(validNum) || validNum <= 0) {
+        return 10;
+    }
+    if (validNum > MAX_LIMIT) {
+        return MAX_LIMIT;
+    }
+    return validNum;
+}
+
 const hardwaresController = {};
 hardwares.forEach(hardware => {
     const modelController = {};
     const model = models[hardware];
     if (!model) return;
-    modelController.getAll = async (req, res) => {
-        let { page, limit } = req.query;
-
-        page = page || 1;
-        limit = limit || 10;
-        const offset = page * limit - limit;
-        const components = await model.findAndCountAll({
-            limit,
-            offset,
-        });
-
-        res.json(components);
-    };
     modelController.getAllWithFilters = async (req, res) => {
-        let { page, limit } = req.query;
+        let { page, limit, ...sortParams } = req.query;
         let { data: filters } = req.body;
-        page = page || 1;
-        limit = limit || 10;
-
+        page = validateNumber(page);
+        limit = validateNumber(limit);
         const offset = page * limit - limit;
+
         const fields = Object.keys(model.getAttributes());
-        const validatedFilters = {};
+
+        const validatedParams = {};
         fields.forEach(async field => {
-            if (filters[field] !== undefined) validatedFilters[field] = filters[field];
+            if (sortParams[field] !== undefined) validatedParams[field] = sortParams[field];
         });
         const where = [];
+        const order = [];
+        Object.keys(validatedParams).forEach(sortKey => {
+            let sortValue;
+            if (Number(validatedParams[sortKey]) === 0) return;
+            if (Number(validatedParams[sortKey]) === 1) sortValue = "ASC";
+            if (Number(validatedParams[sortKey]) === 2) sortValue = "DESC";
+            if (!sortValue) return;
+            order.push([sortKey, sortValue]);
+        });
         const filterTypes = FILTER_MODEL_TYPES[hardware.toLowerCase()];
         if (filterTypes !== undefined) {
             Object.keys(filterTypes).forEach(filterKey => {
@@ -47,14 +56,25 @@ hardwares.forEach(hardware => {
                         where.push({ [filterKey]: { [Op.in]: filters[filterKey] } });
                         break;
                     }
+                    case FILTER_TYPES.selectorJSON: {
+                        if (filters[filterKey].length === 0) break;
+                        where.push({
+                            [Op.and]: filters[filterKey].map(value => ({
+                                [filterKey]: {
+                                    [Op.like]: `%"${value}"%`,
+                                },
+                            })),
+                        });
+                        break;
+                    }
                 }
             });
         }
-
         const components = await model.findAndCountAll({
-            where: { [Op.and]: [...where] },
+            where: { [Op.and]: where },
             limit,
             offset,
+            order,
         });
 
         res.json(components);

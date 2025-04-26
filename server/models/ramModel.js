@@ -30,6 +30,15 @@ const Ram = sequelize.define(
         xmp: { type: DataTypes.BOOLEAN, allowNull: false },
         height: { type: DataTypes.FLOAT, allowNull: false },
         voltage: { type: DataTypes.FLOAT, allowNull: false },
+        fullName: {
+            type: DataTypes.VIRTUAL,
+            get() {
+                return `${this.brand} ${this.model} ${this.memoryType} `;
+            },
+            set(value) {
+                console.error("Do not try to set the `fullName` value!");
+            },
+        },
     },
     { timestamps: false }
 );

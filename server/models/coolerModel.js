@@ -24,7 +24,12 @@ const Cooler = sequelize.define(
             allowNull: false,
             get() {
                 const value = this.getDataValue("sockets");
-                return value ? JSON.parse(value) : [];
+                try {
+                    return value ? JSON.parse(value) : [];
+                } catch (e) {
+                    console.error(er);
+                    return [];
+                }
             },
             set(value) {
                 this.setDataValue("sockets", JSON.stringify(value));
@@ -39,6 +44,15 @@ const Cooler = sequelize.define(
         fanMinSpeed: { type: DataTypes.INTEGER, allowNull: false },
         fanMaxSpeed: { type: DataTypes.INTEGER, allowNull: false },
         bearing: { type: DataTypes.STRING, allowNull: false },
+        fullName: {
+            type: DataTypes.VIRTUAL,
+            get() {
+                return `${this.brand} ${this.name}`;
+            },
+            set(value) {
+                console.error("Do not try to set the `fullName` value!");
+            },
+        },
     },
     { timestamps: false }
 );

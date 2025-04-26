@@ -1,12 +1,56 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styles from "./Configurator.module.scss";
 import { ITEMS_LIST } from "../../utility/constants.js";
 import Item from "../Item/index.js";
 import Input from "../common/Input/index.js";
+import { observer } from "mobx-react-lite";
+import { Context } from "../../index.js";
+import { getHardwaresFromCode } from "../../api/configuratorAPI.js";
+import Spinner from "../Spinner/index.js";
+import Button from "../common/Button/index.js";
 function Configurator() {
     const [confCode, setConfCode] = useState("");
+    const [loading, setLoading] = useState(false);
+    const { configurator } = useContext(Context);
+    const isFirstRender = useRef(true);
+
+    useEffect(() => {
+        if (isFirstRender.current) {
+            return;
+        }
+
+        try {
+            JSON.parse(atob(confCode));
+            setLoading(true);
+            getHardwaresFromCode(confCode)
+                .then(res => {
+                    configurator.setComponents(res);
+                })
+                .catch(() => {
+                    //TODO
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        } catch (e) {
+            return;
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [confCode]);
+    useEffect(() => {
+        if (isFirstRender.current) {
+            return;
+        }
+        if (configurator.confCode !== confCode) setConfCode("");
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [configurator.confCode]);
+    useEffect(() => {
+        isFirstRender.current = false;
+    }, []);
+
     return (
         <div className={styles.root}>
+            <Spinner isLoading={loading} />
             <div className={styles.configurator}>
                 <div className={styles.configurator__header}>
                     <div className={styles.configurator__header__left}>
@@ -14,6 +58,16 @@ function Configurator() {
                         <span className={styles.mandatory}>* Обязательные комплектующие</span>
                     </div>
                     <div className={styles.configurator__header__right}>
+                        {!configurator.isEmpty() && (
+                            <span
+                                className={styles.clearconf}
+                                onClick={() => {
+                                    configurator.clearComponents();
+                                }}
+                            >
+                                Очистить конфигуратор
+                            </span>
+                        )}
                         <Input
                             value={confCode}
                             onChange={({ target }) => {
@@ -29,9 +83,26 @@ function Configurator() {
                     ))}
                 </div>
             </div>
-            <aside className={styles.aside}></aside>
+            <aside className={styles.aside}>
+                {configurator.isEmpty() ? (
+                    <span className={styles.placeholder}>Выберите комплектующие</span>
+                ) : (
+                    <>
+                        <div className={styles.visualisator}></div>
+                        <div className={styles.visualinfo}></div>
+                        <Button
+                            className={styles.getconfbtn}
+                            onClick={() => {
+                                navigator.clipboard.writeText(configurator.confCode);
+                            }}
+                        >
+                            Скопировать код конфигурации
+                        </Button>
+                    </>
+                )}
+            </aside>
         </div>
     );
 }
 
-export default Configurator;
+export default observer(Configurator);

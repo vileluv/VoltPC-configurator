@@ -25,7 +25,12 @@ const Case = sequelize.define(
             allowNull: false,
             get() {
                 const value = this.getDataValue("motherboardFormfactors");
-                return value ? JSON.parse(value) : [];
+                try {
+                    return value ? JSON.parse(value) : [];
+                } catch (e) {
+                    console.error(er);
+                    return [];
+                }
             },
             set(value) {
                 this.setDataValue("motherboardFormfactors", JSON.stringify(value));
@@ -40,6 +45,15 @@ const Case = sequelize.define(
         maxFans: { type: DataTypes.INTEGER, allowNull: false },
         fansSize: { type: DataTypes.INTEGER, allowNull: false },
         color: { type: DataTypes.STRING, allowNull: false },
+        fullName: {
+            type: DataTypes.VIRTUAL,
+            get() {
+                return `${this.brand} ${this.name}`;
+            },
+            set(value) {
+                console.error("Do not try to set the `fullName` value!");
+            },
+        },
     },
     { timestamps: false }
 );

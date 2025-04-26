@@ -10,7 +10,7 @@ function HardwareComponent({ children, type, values, onButtonClick, ...props }) 
     return (
         <div className={styles.root} {...props}>
             <img alt={values.name} className={styles.image}></img>
-            <div className={styles.description}>{`${values.brand} ${values.name} ${values.model}`}</div>
+            <div className={styles.description}>{values.fullName}</div>
             <div className={styles.price}>{values.price} ₽</div>
             <div className={styles.btnwrapper}>
                 {configurator.getComponent(type)?.id === values?.id ? (

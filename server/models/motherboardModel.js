@@ -26,6 +26,15 @@ const Motherboard = sequelize.define(
         maxRamAmount: { type: DataTypes.INTEGER, allowNull: false },
         m2Amount: { type: DataTypes.INTEGER, allowNull: false },
         cpuPins: { type: DataTypes.STRING, allowNull: false },
+        fullName: {
+            type: DataTypes.VIRTUAL,
+            get() {
+                return `${this.brand} ${this.name} ${this.socket} ${this.chipset}`;
+            },
+            set(value) {
+                console.error("Do not try to set the `fullName` value!");
+            },
+        },
     },
     { timestamps: false }
 );

@@ -1,30 +1,19 @@
 import { authHost, host } from ".";
-export const getHardwares = async (type, page = 1, limit = 10) => {
-    try {
-        const { data } = await host.get(`api/${type}`, {
-            params: {
-                page,
-                limit,
-            },
-        });
-        return data;
-    } catch (err) {
-        console.error(err);
-        throw err;
-    }
-};
-export const getHardwaresWithFilters = async (type, filters, page = 1, limit = 10) => {
+export const getHardwaresWithFilters = async (type, filters, page = 1, limit = 10, ...sortArguments) => {
     try {
         const { data } = await host.post(
-            `api/${type}/filters`,
+            `api/${type}`,
             {
                 data: filters,
             },
             {
-                params: {
-                    page,
-                    limit,
-                },
+                params: Object.assign(
+                    {
+                        page,
+                        limit,
+                    },
+                    ...sortArguments
+                ),
             }
         );
         return data;
@@ -38,6 +27,19 @@ export const getHardware = async (type, id) => {
         const { data } = await host.get(`api/${type}/${id}`, {
             params: {
                 id,
+            },
+        });
+        return data;
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+};
+export const getHardwaresFromCode = async code => {
+    try {
+        const { data } = await host.get(`api/configurator`, {
+            params: {
+                code,
             },
         });
         return data;

@@ -32,6 +32,15 @@ const Power = sequelize.define(
         pciePinAmount: { type: DataTypes.INTEGER, allowNull: false },
         idePinAmount: { type: DataTypes.INTEGER, allowNull: false },
         sataPinAmount: { type: DataTypes.INTEGER, allowNull: false },
+        fullName: {
+            type: DataTypes.VIRTUAL,
+            get() {
+                return `${this.brand} ${this.name}`;
+            },
+            set(value) {
+                console.error("Do not try to set the `fullName` value!");
+            },
+        },
     },
     { timestamps: false }
 );

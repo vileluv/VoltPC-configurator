@@ -102,6 +102,7 @@ function FilterComponent({ type, title = "", filterType = "", interval = { min: 
                     </div>
                 );
             }
+            case FILTER_TYPES.selectorJSON:
             case FILTER_TYPES.selector: {
                 if (selector.length === 0) return <></>;
                 return (
@@ -109,7 +110,8 @@ function FilterComponent({ type, title = "", filterType = "", interval = { min: 
                         {selector.map(label => (
                             <Checkbox
                                 label={label}
-                                key={label}
+                                forId={label + "_" + type}
+                                key={label + "_" + type}
                                 checked={selected.includes(label)}
                                 onChange={() => {
                                     toggleCheckbox(label);
