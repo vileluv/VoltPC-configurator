@@ -10,7 +10,7 @@
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 0.8em;
+
         cursor: pointer;
 
         .title {
@@ -31,10 +31,16 @@
         text-overflow: ellipsis;
         opacity: 1;
         margin-bottom: 0.8em;
+        padding: 0.5em 0.25em;
+        border-radius: 0.5em;
         &__hide {
             max-height: 0em;
             overflow-y: hidden;
             opacity: 0;
+        }
+        &__disabled {
+            pointer-events: none;
+            background-color: variables.$secondary-color-light;
         }
         .interval {
             display: flex;

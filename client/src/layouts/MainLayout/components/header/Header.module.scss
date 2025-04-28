@@ -2,7 +2,7 @@
 @use "../../../../styles/variables";
 
 .header {
-    background-color: #fff;
+    background-color: variables.$primary-color-light;
     border-bottom: 1px solid variables.$border-color;
     width: 100%;
     position: sticky;
@@ -37,11 +37,67 @@
             padding: 0.5em 2em;
             background-color: variables.$primary-color-light;
             transition: 100ms ease-in;
+            cursor: pointer;
             &:hover {
                 background-color: color.scale(variables.$primary-color-light, $blackness: 10%);
             }
             &:active {
                 background-color: color.scale(variables.$primary-color-light, $blackness: 20%);
+            }
+        }
+        .profile {
+            position: relative;
+            height: 2.2em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 9.125em;
+            padding: 0 1.75em;
+            cursor: pointer;
+            .login {
+                text-align: center;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+                height: 1em;
+            }
+            .wrapper {
+                position: absolute;
+                top: 1.5em;
+                left: 1.5em;
+                height: 0;
+                padding: 0;
+                opacity: 0;
+                transition: opacity 400ms ease, height 200ms ease, padding 200ms ease;
+                pointer-events: none;
+                cursor: default;
+                .options {
+                    display: flex;
+                    overflow: hidden;
+                    flex-direction: column;
+                    border: 1px solid variables.$border-color;
+                    background-color: variables.$primary-color-light;
+                    padding: 1em;
+                    gap: 1em;
+                    white-space: nowrap;
+
+                    .option {
+                        cursor: pointer;
+
+                        &:hover {
+                            text-decoration: underline;
+                        }
+                    }
+                }
+            }
+
+            &:hover {
+                .wrapper {
+                    opacity: 1;
+                    height: fit-content;
+                    padding: 1em;
+                    pointer-events: all;
+                }
             }
         }
     }

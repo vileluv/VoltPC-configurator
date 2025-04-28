@@ -12,3 +12,6 @@ static
 
 #db
 *.sqlite*
+
+#builds
+**/build

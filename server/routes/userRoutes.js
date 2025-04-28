@@ -6,5 +6,6 @@ const authHandler = require("../middleware/authMiddleware.js");
 router.post("/registration", userController.registration);
 router.post("/login", userController.login);
 router.get("/check", authHandler, userController.auth);
+router.post("/savecode", authHandler, userController.saveCodeConf);
 
 module.exports = router;

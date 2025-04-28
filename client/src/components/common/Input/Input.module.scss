@@ -8,6 +8,7 @@
     padding: 0.2em 0.8em;
     transition: 200ms;
     line-height: 1;
+    box-sizing: border-box;
     &:hover {
         border-color: color.scale(variables.$primary-color-green, $blackness: 40%);
     }

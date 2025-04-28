@@ -12,6 +12,7 @@ import Spinner from "../Spinner/index.js";
 import multiModuleStyles from "../../utility/multiModuleStyles.js";
 import Input from "../common/Input/index.js";
 import validateNumber from "../../utility/validateNumber.js";
+import { FILTER_TYPES } from "../../utility/constants.js";
 
 function Item({ children, itemName, itemType, count, require = false, ...props }) {
     const { filter, configurator } = useContext(Context);
@@ -24,29 +25,58 @@ function Item({ children, itemName, itemType, count, require = false, ...props }
     const scrollRef = useRef(null);
     const firstRender = useRef(true);
     const { id, fullName } = configurator.getComponent(itemType);
-
+    const [sortArg, setSortArg] = useState({});
     const scrollToTop = () => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = 0;
         }
     };
-    function getModalInfoRequests() {
-        setLoading(true);
-        Promise.all([getFilters(itemType), getHardwaresWithFilters(itemType, {}, 1, 10)])
-            .then(values => {
-                setFilters(values[0]);
-                setHardwareArray(values[1]?.rows || []);
-            })
-            .catch(() => {
-                //TODO
-            })
-            .finally(() => {
-                setLoading(false);
+    function addPreFilters(reqFilters) {
+        Object.keys(reqFilters)
+            .filter(f => reqFilters[f]?.values !== undefined)
+            .forEach(element => {
+                Object.entries(reqFilters[element]?.relations || []).forEach(entry => {
+                    const componentValue = configurator.getComponent(entry[0])?.[entry[1]];
+                    if (componentValue === undefined) return;
+                    if (filter.filters[element] === undefined) {
+                        switch (reqFilters[element]?.type) {
+                            case FILTER_TYPES.interval: {
+                                const intervalValue = { min: componentValue, max: reqFilters[element]?.values?.max };
+                                if (componentValue > reqFilters[element]?.values?.max) {
+                                    intervalValue.max = intervalValue.min;
+                                    intervalValue.min = reqFilters[element]?.values?.min;
+                                }
+                                filter.addFilters(element, intervalValue);
+                                break;
+                            }
+                            case FILTER_TYPES.selectorJSON:
+                            case FILTER_TYPES.selector: {
+                                filter.addFilters(element, [componentValue].flat());
+                                break;
+                            }
+                            default: {
+                                console.error("Unallowed filter type: " + reqFilters[element]?.type);
+                            }
+                        }
+                    }
+                });
             });
     }
-    function getHardwareWithFiltersRequest(sortArguments, page = 1, limit = 10) {
+    async function getModalInfoRequests() {
+        setLoading(true);
+        const reqFilters = await getFilters(itemType).catch(err => {
+            return [];
+        });
+        setFilters(reqFilters);
+        addPreFilters(reqFilters);
+        const reqHardwares = await getHardwaresWithFilters(itemType, filter.filters, 1, 10);
+        setHardwareArray(reqHardwares?.rows || []);
+        setLoading(false);
+    }
+    function getHardwareWithFiltersRequest() {
         setHardwareLoading(true);
-        getHardwaresWithFilters(itemType, filter.filters, page, limit, sortArguments)
+        addPreFilters(filters);
+        getHardwaresWithFilters(itemType, filter.filters, page, 10, sortArg)
             .then(res => {
                 setHardwareArray(res?.rows || []);
             })
@@ -64,12 +94,12 @@ function Item({ children, itemName, itemType, count, require = false, ...props }
             return;
         }
         const timer = setTimeout(() => {
-            getHardwareWithFiltersRequest({}, validateNumber(page), 10);
+            getHardwareWithFiltersRequest();
         }, 500);
         return () => clearTimeout(timer);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page]);
+    }, [page, sortArg]);
 
     return (
         <div className={styles.root} {...props}>
@@ -94,9 +124,9 @@ function Item({ children, itemName, itemType, count, require = false, ...props }
                 <Modal
                     btnName={id === undefined ? "Добавить" : "Сменить"}
                     loading={loading}
-                    propsOnClick={() => {
+                    propsOnClick={async () => {
                         filter.setFilters({});
-                        getModalInfoRequests();
+                        await getModalInfoRequests();
                         setModal(true);
                     }}
                     customModalValue={modal}
@@ -108,20 +138,31 @@ function Item({ children, itemName, itemType, count, require = false, ...props }
                         </div>
                         <div className={styles.modal__body}>
                             <div className={styles.filters}>
-                                {Object.keys(filters).map(element => {
-                                    const filterInfo = filters[element];
-                                    if (filterInfo.values === undefined) return null;
-                                    return (
-                                        <FilterComponent
-                                            key={element}
-                                            type={element}
-                                            title={filterInfo.title}
-                                            filterType={filterInfo.type}
-                                            interval={filterInfo.values}
-                                            selector={filterInfo.values}
-                                        />
-                                    );
-                                })}
+                                {Object.keys(filters)
+                                    .filter(f => filters[f]?.values !== undefined)
+                                    .map(element => {
+                                        const filterInfo = filters[element];
+                                        const condition = Object.entries(filters[element]?.relations || [])
+                                            .map(entry => {
+                                                const componentValue = configurator.getComponent(entry[0])?.[entry[1]];
+                                                if (componentValue === undefined) return false;
+                                                return true;
+                                            })
+                                            .includes(true);
+                                        return (
+                                            <FilterComponent
+                                                key={element}
+                                                type={element}
+                                                title={filterInfo.title}
+                                                filterType={filterInfo.type}
+                                                interval={filterInfo.values}
+                                                selector={filterInfo.values}
+                                                preSelected={condition && filter.filters[element]}
+                                                preIntervalData={condition && filter.filters[element]}
+                                                disabled={condition}
+                                            />
+                                        );
+                                    })}
 
                                 <Button
                                     onClick={() => {
@@ -147,7 +188,7 @@ function Item({ children, itemName, itemType, count, require = false, ...props }
                                         <span className={styles.sorttitle}>Сортировать по:</span>
                                         <SortItem
                                             customUseEffect={state => {
-                                                getHardwareWithFiltersRequest({ price: state });
+                                                setSortArg({ price: state });
                                             }}
                                         >
                                             Цене
@@ -185,19 +226,23 @@ function Item({ children, itemName, itemType, count, require = false, ...props }
                                     </div>
                                 </div>
                                 <div className={styles.hardwares}>
-                                    {hardwareArray
-                                        .sort(e => (e?.id === id ? -1 : 1))
-                                        .map((e, i) => (
-                                            <HardwareComponent
-                                                type={itemType}
-                                                values={e}
-                                                key={i}
-                                                onButtonClick={() => {
-                                                    setModal(false);
-                                                    configurator.setComponent(itemType, e);
-                                                }}
-                                            />
-                                        ))}
+                                    {hardwareArray.length > 0 ? (
+                                        hardwareArray
+                                            .sort(e => (e?.id === id ? -1 : 1))
+                                            .map((e, i) => (
+                                                <HardwareComponent
+                                                    type={itemType}
+                                                    values={e}
+                                                    key={i}
+                                                    onButtonClick={() => {
+                                                        setModal(false);
+                                                        configurator.setComponent(itemType, e);
+                                                    }}
+                                                />
+                                            ))
+                                    ) : (
+                                        <div className={styles.placeholder}>По заданным фильтрам комплектующих нет</div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -209,7 +254,6 @@ function Item({ children, itemName, itemType, count, require = false, ...props }
 }
 
 function SortItem({ children, sortArgument, customUseEffect = () => {}, onClick = () => {}, ...props }) {
-    //TODO CHANGE STATE ON REQUEST
     const [stateCount, setStateCount] = useState(0);
     const firstRender = useRef(true);
     useEffect(() => {

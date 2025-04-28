@@ -7,7 +7,16 @@ import { observer } from "mobx-react-lite";
 import { FILTER_TYPES } from "../../utility/constants.js";
 import { Context } from "../../index.js";
 
-function FilterComponent({ type, title = "", filterType = "", interval = { min: null, max: null }, selector = [] }) {
+function FilterComponent({
+    type,
+    title = "",
+    filterType = "",
+    interval = { min: null, max: null },
+    selector = [],
+    preSelected = [],
+    preIntervalData = { min: null, max: null },
+    disabled,
+}) {
     const hideRef = useRef(null);
     const { filter } = useContext(Context);
     const [hide, setHide] = useState(false);
@@ -33,6 +42,7 @@ function FilterComponent({ type, title = "", filterType = "", interval = { min: 
         if (isFirstRender.current) {
             return;
         }
+
         if (selected.length === 0) {
             filter.deleteFilter(type);
             return;
@@ -42,15 +52,23 @@ function FilterComponent({ type, title = "", filterType = "", interval = { min: 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selected]);
     useEffect(() => {
-        if (Object.keys(checkFilters).length === 0) {
+        if (checkFilters[type] === undefined) {
             setIntervalData(interval);
             setSelected([]);
         }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [checkFilters]);
 
     useEffect(() => {
         isFirstRender.current = false;
+        if (preSelected.length > 0) {
+            setSelected(preSelected);
+        }
+        if (preIntervalData.min !== null) {
+            setIntervalData(preIntervalData);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleChange = e => {
@@ -151,7 +169,15 @@ function FilterComponent({ type, title = "", filterType = "", interval = { min: 
                     </svg>
                 </div>
             </div>
-            <div className={multiModuleStyles(styles.body, hide ? styles.body__hide : "")}>{switchType()}</div>
+            <div
+                className={multiModuleStyles(
+                    styles.body,
+                    hide ? styles.body__hide : "",
+                    disabled ? styles.body__disabled : ""
+                )}
+            >
+                {switchType()}
+            </div>
         </div>
     );
 }

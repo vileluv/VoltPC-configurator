@@ -59,9 +59,14 @@
         padding: 1em;
         align-items: center;
         justify-content: center;
+        gap: 1em;
+
         .visualisator {
         }
         .visualinfo {
+        }
+        .getconfbtn {
+            width: 16em;
         }
     }
 }

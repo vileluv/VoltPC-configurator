@@ -58,6 +58,16 @@ export default class ConfiguratorStore {
             )
         );
     }
+    getConsumption() {
+        return Math.ceil(
+            (this._processor.tdp || 0) * 1.1 +
+                (this._videocard.power || 0) +
+                (this._motherboard.id ? 40 : 0) +
+                (this._ram.moduleAmount || 0) * 5 +
+                (this._storage.id ? 10 : 0) +
+                (this._cooler.id ? 10 : 0)
+        );
+    }
     get confCode() {
         return this._confcode;
     }

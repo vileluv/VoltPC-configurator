@@ -1,7 +1,7 @@
 import Admin from "./pages/admin/index.js";
 import Auth from "./pages/auth/index.js";
 import Main from "./pages/main/index.js";
-import { ADMIN_ROUTE, MAIN_ROUTE, AUTH_ROUTE } from "./utility/constants.js";
+import { ADMIN_ROUTE, LOGIN_ROUTE, MAIN_ROUTE, REGISTRATION_ROUTE } from "./utility/constants.js";
 
 export const authRoutes = [
     {
@@ -16,7 +16,11 @@ export const publicRoutes = [
         Component: Main,
     },
     {
-        path: AUTH_ROUTE,
+        path: LOGIN_ROUTE,
+        Component: Auth,
+    },
+    {
+        path: REGISTRATION_ROUTE,
         Component: Auth,
     },
 ];

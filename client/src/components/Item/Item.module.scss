@@ -108,7 +108,7 @@
                                 border-right: 0;
                             }
                             .setpage {
-                                width: 2em;
+                                width: 3.5em;
                                 border: 2px solid variables.$secondary-color-black;
                                 border-right: 1px solid variables.$secondary-color-black;
                                 border-left: 1px solid variables.$secondary-color-black;
@@ -128,6 +128,10 @@
                         flex-direction: column;
                         gap: 1em;
                         width: 55em;
+                        .placeholder {
+                            padding: 2em;
+                            align-self: center;
+                        }
                     }
                 }
             }

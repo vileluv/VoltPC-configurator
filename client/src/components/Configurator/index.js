@@ -14,6 +14,17 @@ function Configurator() {
     const { configurator } = useContext(Context);
     const isFirstRender = useRef(true);
 
+    function checkRequire() {
+        for (const obj of ITEMS_LIST) {
+            if (obj.require) {
+                if (configurator.getComponent(obj.type)?.id === undefined) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    const isRequireFull = checkRequire();
     useEffect(() => {
         if (isFirstRender.current) {
             return;
@@ -88,8 +99,10 @@ function Configurator() {
                     <span className={styles.placeholder}>Выберите комплектующие</span>
                 ) : (
                     <>
-                        <div className={styles.visualisator}></div>
-                        <div className={styles.visualinfo}></div>
+                        <div className={styles.power}></div>
+                        <div className={styles.powerinfo}>
+                            Предполагаемое потребление : {configurator.getConsumption()} Вт
+                        </div>
                         <Button
                             className={styles.getconfbtn}
                             onClick={() => {
@@ -97,6 +110,16 @@ function Configurator() {
                             }}
                         >
                             Скопировать код конфигурации
+                        </Button>
+                        <Button
+                            className={styles.getconfbtn}
+                            danger={!isRequireFull}
+                            disabled={!isRequireFull}
+                            onClick={() => {
+                                //TODO
+                            }}
+                        >
+                            {isRequireFull ? "Собрать" : "Недостаточно комплектующих"}
                         </Button>
                     </>
                 )}

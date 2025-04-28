@@ -13,7 +13,11 @@ const Processor = sequelize.define(
             allowNull: false,
             get() {
                 const value = this.getDataValue("releaseDate");
-                return new Date(value).getDate();
+                return new Date(value).toLocaleDateString("ru-RU", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                });
             },
             set(value) {
                 this.setDataValue("releaseDate", new Date(value));
