@@ -22,6 +22,12 @@ function Header() {
                         <div className={styles.login}>{user.user?.login}</div>
                         <div className={styles.wrapper}>
                             <div className={styles.options}>
+                                {user.user?.role === "ADMIN" && (
+                                    <Link to="/admin" className={styles.option} onClick={() => {}}>
+                                        Админ-панель
+                                    </Link>
+                                )}
+
                                 <div
                                     className={styles.option}
                                     onClick={() => {

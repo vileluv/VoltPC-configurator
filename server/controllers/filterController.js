@@ -22,9 +22,16 @@ exports.getFilters = async (req, res, next) => {
                 });
 
                 const itemsArray = items
-                    .map(item => item[field])
+                    .map(item => {
+                        try {
+                            return JSON.parse(item[field]);
+                        } catch (e) {
+                            return item[field];
+                        }
+                    })
                     .filter(f => f !== null)
                     .flat();
+
                 if (itemsArray.length === 0) {
                     filterField.values = undefined;
                     break;

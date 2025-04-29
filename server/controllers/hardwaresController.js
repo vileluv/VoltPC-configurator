@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, DataTypes } = require("sequelize");
 const models = require("../models/index.js");
 const { hardwares, FILTER_MODEL_TYPES, FILTER_TYPES } = require("../utility/constants.js");
 
@@ -58,10 +58,11 @@ hardwares.forEach(hardware => {
                     }
                     case FILTER_TYPES.selectorJSON: {
                         if (filters[filterKey].length === 0) break;
+
                         where.push({
                             [Op.and]: filters[filterKey].map(value => ({
                                 [filterKey]: {
-                                    [Op.like]: `%"${value}"%`,
+                                    [Op.like]: `%\\"${value}\\"%`,
                                 },
                             })),
                         });
@@ -85,8 +86,16 @@ hardwares.forEach(hardware => {
         return res.json(device);
     };
     modelController.create = async (req, res) => {
-        const component = await model.create(req.body);
+        let { data } = req.body;
+        const component = await model.create(data);
         res.status(201).json(component);
+    };
+    modelController.getHardwareModel = (req, res) => {
+        const attributes = Object.keys(model.rawAttributes).filter(
+            attribute => attribute !== "fullName" && attribute !== "id"
+        );
+
+        res.json(attributes);
     };
     hardwaresController[hardware] = modelController;
 });

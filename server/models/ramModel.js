@@ -8,6 +8,7 @@ const Ram = sequelize.define(
         name: { type: DataTypes.STRING, allowNull: false },
         brand: { type: DataTypes.STRING, allowNull: false },
         price: { type: DataTypes.FLOAT, allowNull: false },
+        img: { type: DataTypes.STRING, allowNull: false },
         releaseDate: {
             type: DataTypes.DATE,
             allowNull: false,
@@ -16,7 +17,7 @@ const Ram = sequelize.define(
                 return new Date(value).getDate();
             },
             set(value) {
-                this.setDataValue("releaseDate", new Date(value));
+                this.setDataValue("releaseDate", new Date(value).toISOString());
             },
         },
         formfactor: { type: DataTypes.STRING, allowNull: false },
@@ -27,13 +28,13 @@ const Ram = sequelize.define(
         clockRate: { type: DataTypes.INTEGER, allowNull: false },
         bandwidth: { type: DataTypes.INTEGER, allowNull: false },
         casLatency: { type: DataTypes.INTEGER, allowNull: false },
-        xmp: { type: DataTypes.BOOLEAN, allowNull: false },
+        xmp: { type: DataTypes.STRING, allowNull: false },
         height: { type: DataTypes.FLOAT, allowNull: false },
         voltage: { type: DataTypes.FLOAT, allowNull: false },
         fullName: {
             type: DataTypes.VIRTUAL,
             get() {
-                return `${this.brand} ${this.model} ${this.memoryType} `;
+                return `${this.brand} ${this.name} ${this.memoryType} `;
             },
             set(value) {
                 console.error("Do not try to set the `fullName` value!");

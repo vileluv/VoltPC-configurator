@@ -8,6 +8,7 @@ const Cooler = sequelize.define(
         name: { type: DataTypes.STRING, allowNull: false },
         brand: { type: DataTypes.STRING, allowNull: false },
         price: { type: DataTypes.FLOAT, allowNull: false },
+        img: { type: DataTypes.STRING, allowNull: false },
         releaseDate: {
             type: DataTypes.DATE,
             allowNull: false,
@@ -16,7 +17,7 @@ const Cooler = sequelize.define(
                 return new Date(value).getDate();
             },
             set(value) {
-                this.setDataValue("releaseDate", new Date(value));
+                this.setDataValue("releaseDate", new Date(value).toISOString());
             },
         },
         sockets: {
@@ -27,7 +28,7 @@ const Cooler = sequelize.define(
                 try {
                     return value ? JSON.parse(value) : [];
                 } catch (e) {
-                    console.error(er);
+                    console.error(e);
                     return [];
                 }
             },

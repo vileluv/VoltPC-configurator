@@ -7,6 +7,7 @@ export const authRoutes = [
     {
         path: ADMIN_ROUTE,
         Component: Admin,
+        requireRole: "ADMIN",
     },
 ];
 

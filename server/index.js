@@ -4,11 +4,19 @@ const cors = require("cors");
 const router = require("./routes/index.js");
 const { syncDatabase } = require("./models/index.js");
 const ErrorHandler = require("./middleware/errorHandlerMiddleware.js");
+const upload = require("./middleware/uploadMiddleware.js");
+const path = require("path");
 
 const PORT = process.env.PORT || 3000;
 const app = express();
 
 app.use(cors());
+
+app.post("/filestorage", upload.single("image"), (req, res) => {
+    res.send({ message: "Success upload", path: req.file.path });
+});
+app.use("/filestorage", express.static(path.join(__dirname, "filestorage")));
+
 app.use(express.json());
 app.use("/api", router);
 

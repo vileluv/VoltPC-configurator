@@ -8,6 +8,7 @@ const Videocard = sequelize.define(
         name: { type: DataTypes.STRING, allowNull: false },
         brand: { type: DataTypes.STRING, allowNull: false },
         price: { type: DataTypes.FLOAT, allowNull: false },
+        img: { type: DataTypes.STRING, allowNull: false },
         releaseDate: {
             type: DataTypes.DATE,
             allowNull: false,
@@ -16,7 +17,7 @@ const Videocard = sequelize.define(
                 return new Date(value).getDate();
             },
             set(value) {
-                this.setDataValue("releaseDate", new Date(value));
+                this.setDataValue("releaseDate", new Date(value).toISOString());
             },
         },
         processorBrand: { type: DataTypes.STRING, allowNull: false },

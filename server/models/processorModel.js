@@ -8,6 +8,7 @@ const Processor = sequelize.define(
         name: { type: DataTypes.STRING, allowNull: false },
         brand: { type: DataTypes.STRING, allowNull: false },
         price: { type: DataTypes.FLOAT, allowNull: false },
+        img: { type: DataTypes.STRING, allowNull: false },
         releaseDate: {
             type: DataTypes.DATE,
             allowNull: false,
@@ -20,7 +21,7 @@ const Processor = sequelize.define(
                 });
             },
             set(value) {
-                this.setDataValue("releaseDate", new Date(value));
+                this.setDataValue("releaseDate", new Date(value).toISOString());
             },
         },
         socket: { type: DataTypes.STRING, allowNull: false },

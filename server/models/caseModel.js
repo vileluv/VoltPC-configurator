@@ -8,6 +8,7 @@ const Case = sequelize.define(
         name: { type: DataTypes.STRING, allowNull: false },
         brand: { type: DataTypes.STRING, allowNull: false },
         price: { type: DataTypes.FLOAT, allowNull: false },
+        img: { type: DataTypes.STRING, allowNull: false },
         releaseDate: {
             type: DataTypes.DATE,
             allowNull: false,
@@ -16,7 +17,7 @@ const Case = sequelize.define(
                 return new Date(value).getDate();
             },
             set(value) {
-                this.setDataValue("releaseDate", new Date(value));
+                this.setDataValue("releaseDate", new Date(value).toISOString());
             },
         },
         typefactor: { type: DataTypes.STRING, allowNull: false },
@@ -28,7 +29,7 @@ const Case = sequelize.define(
                 try {
                     return value ? JSON.parse(value) : [];
                 } catch (e) {
-                    console.error(er);
+                    console.error(e);
                     return [];
                 }
             },

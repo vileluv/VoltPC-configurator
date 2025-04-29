@@ -13,7 +13,7 @@ class userController {
         if (!login || !password) {
             return next(ApiError.badRequest("Некорректный логин или пароль"));
         }
-        if (login.length > 50 || login.length < 6 || password.length < 8 || password.length > 50) {
+        if (login.length > 50 || login.length < 5 || password.length < 5 || password.length > 50) {
             return next(ApiError.badRequest("Неверная длина логина или пароля"));
         }
         const candidate = await User.findOne({ where: { login } });
@@ -29,9 +29,6 @@ class userController {
         const { login, password } = req.body;
         if (!login || !password) {
             return next(ApiError.badRequest("Некорректный логин или пароль"));
-        }
-        if (login.length > 50 || login.length < 6 || password.length < 8 || password.length > 50) {
-            return next(ApiError.badRequest("Неверная длина логина или пароля"));
         }
         const user = await User.findOne({ where: { login } });
         if (!user) {
