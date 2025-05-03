@@ -1,5 +1,5 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../utility/database.js");
+const { DataTypes, col } = require("sequelize");
+const sequelize = require("../../utility/database.js");
 
 const Storage = sequelize.define(
     "Storage",
@@ -10,11 +10,15 @@ const Storage = sequelize.define(
         price: { type: DataTypes.FLOAT, allowNull: false },
         img: { type: DataTypes.STRING, allowNull: false },
         releaseDate: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             allowNull: false,
             get() {
                 const value = this.getDataValue("releaseDate");
-                return new Date(value).getDate();
+                return new Date(value).toLocaleDateString("ru-RU", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                });
             },
             set(value) {
                 this.setDataValue("releaseDate", new Date(value).toISOString());
@@ -22,7 +26,6 @@ const Storage = sequelize.define(
         },
         type: { type: DataTypes.STRING, allowNull: false },
         formfactor: { type: DataTypes.FLOAT, allowNull: false },
-        interface: { type: DataTypes.STRING, allowNull: false },
         memorySize: { type: DataTypes.INTEGER, allowNull: false },
         spindleSpeed: { type: DataTypes.INTEGER, allowNull: true },
         readSpeed: { type: DataTypes.INTEGER, allowNull: true },
@@ -31,14 +34,16 @@ const Storage = sequelize.define(
         fullName: {
             type: DataTypes.VIRTUAL,
             get() {
-                return `${this.brand} ${this.model} ${this.type} `;
+                return `${this.brand} ${this.model} ${this.type} ${this.StorageInterface?.name} `;
             },
             set(value) {
                 console.error("Do not try to set the `fullName` value!");
             },
         },
     },
-    { timestamps: false }
+    {
+        timestamps: false,
+    }
 );
 
 module.exports = Storage;

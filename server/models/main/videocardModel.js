@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../utility/database.js");
+const sequelize = require("../../utility/database.js");
 
 const Videocard = sequelize.define(
     "Videocard",
@@ -10,11 +10,15 @@ const Videocard = sequelize.define(
         price: { type: DataTypes.FLOAT, allowNull: false },
         img: { type: DataTypes.STRING, allowNull: false },
         releaseDate: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             allowNull: false,
             get() {
                 const value = this.getDataValue("releaseDate");
-                return new Date(value).getDate();
+                return new Date(value).toLocaleDateString("ru-RU", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                });
             },
             set(value) {
                 this.setDataValue("releaseDate", new Date(value).toISOString());
@@ -23,22 +27,7 @@ const Videocard = sequelize.define(
         processorBrand: { type: DataTypes.STRING, allowNull: false },
         interface: { type: DataTypes.STRING, allowNull: false },
         fanAmount: { type: DataTypes.INTEGER, allowNull: false },
-        connectors: {
-            type: DataTypes.TEXT,
-            allowNull: false,
-            get() {
-                const value = this.getDataValue("connectors");
-                try {
-                    return value ? JSON.parse(value) : [];
-                } catch (e) {
-                    console.error(e);
-                    return [];
-                }
-            },
-            set(value) {
-                this.setDataValue("connectors", JSON.stringify(value));
-            },
-        },
+        connectors: { type: DataTypes.TEXT, allowNull: false },
         nanometers: { type: DataTypes.INTEGER, allowNull: false },
         clockSpeed: { type: DataTypes.INTEGER, allowNull: false },
         maxResolution: { type: DataTypes.STRING, allowNull: false },

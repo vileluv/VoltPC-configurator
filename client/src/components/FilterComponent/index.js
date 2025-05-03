@@ -120,7 +120,8 @@ function FilterComponent({
                     </div>
                 );
             }
-            case FILTER_TYPES.selectorJSON:
+            case FILTER_TYPES.selectorWithForeign:
+            case FILTER_TYPES.selectorWithManyForeign:
             case FILTER_TYPES.selector: {
                 if (selector.length === 0) return <></>;
                 return (

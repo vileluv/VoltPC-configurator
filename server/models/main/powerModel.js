@@ -1,8 +1,8 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../utility/database.js");
+const sequelize = require("../../utility/database.js");
 
-const Processor = sequelize.define(
-    "Processor",
+const Power = sequelize.define(
+    "Power",
     {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
         name: { type: DataTypes.STRING, allowNull: false },
@@ -10,7 +10,7 @@ const Processor = sequelize.define(
         price: { type: DataTypes.FLOAT, allowNull: false },
         img: { type: DataTypes.STRING, allowNull: false },
         releaseDate: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             allowNull: false,
             get() {
                 const value = this.getDataValue("releaseDate");
@@ -24,23 +24,23 @@ const Processor = sequelize.define(
                 this.setDataValue("releaseDate", new Date(value).toISOString());
             },
         },
-        socket: { type: DataTypes.STRING, allowNull: false },
-        model: { type: DataTypes.STRING, allowNull: false },
-        speed: { type: DataTypes.INTEGER, allowNull: false },
-        cores: { type: DataTypes.INTEGER, allowNull: false },
-        threads: { type: DataTypes.INTEGER, allowNull: false },
-        tdp: { type: DataTypes.INTEGER, allowNull: false },
-        nanometers: { type: DataTypes.INTEGER, allowNull: false },
-        cacheL1: { type: DataTypes.STRING, allowNull: false },
-        cacheL2: { type: DataTypes.STRING, allowNull: false },
-        cacheL3: { type: DataTypes.STRING, allowNull: false },
-        isIntegratedVideo: { type: DataTypes.STRING, allowNull: false },
-        integratedVideoName: { type: DataTypes.STRING, allowNull: true },
-        postType: { type: DataTypes.STRING, allowNull: false },
+        power: { type: DataTypes.INTEGER, allowNull: false },
+        standart: { type: DataTypes.STRING, allowNull: false },
+        fanSize: { type: DataTypes.INTEGER, allowNull: false },
+        certificate: { type: DataTypes.STRING, allowNull: false },
+        motherboardPinType: { type: DataTypes.STRING, allowNull: false },
+        cpuPinType: { type: DataTypes.STRING, allowNull: false },
+        pciePinType: { type: DataTypes.STRING, allowNull: false },
+        idePinType: { type: DataTypes.STRING, allowNull: false },
+        sataPinType: { type: DataTypes.STRING, allowNull: false },
+        cpuPinAmount: { type: DataTypes.INTEGER, allowNull: false },
+        pciePinAmount: { type: DataTypes.INTEGER, allowNull: false },
+        idePinAmount: { type: DataTypes.INTEGER, allowNull: false },
+        sataPinAmount: { type: DataTypes.INTEGER, allowNull: false },
         fullName: {
             type: DataTypes.VIRTUAL,
             get() {
-                return `${this.brand} ${this.model} ${this.name} `;
+                return `${this.brand} ${this.name}`;
             },
             set(value) {
                 console.error("Do not try to set the `fullName` value!");
@@ -50,4 +50,4 @@ const Processor = sequelize.define(
     { timestamps: false }
 );
 
-module.exports = Processor;
+module.exports = Power;

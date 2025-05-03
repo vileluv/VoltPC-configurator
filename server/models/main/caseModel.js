@@ -1,5 +1,5 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../utility/database.js");
+const { DataTypes, col } = require("sequelize");
+const sequelize = require("../../utility/database.js");
 
 const Case = sequelize.define(
     "Case",
@@ -10,33 +10,21 @@ const Case = sequelize.define(
         price: { type: DataTypes.FLOAT, allowNull: false },
         img: { type: DataTypes.STRING, allowNull: false },
         releaseDate: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             allowNull: false,
             get() {
                 const value = this.getDataValue("releaseDate");
-                return new Date(value).getDate();
+                return new Date(value).toLocaleDateString("ru-RU", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                });
             },
             set(value) {
                 this.setDataValue("releaseDate", new Date(value).toISOString());
             },
         },
         typefactor: { type: DataTypes.STRING, allowNull: false },
-        motherboardFormfactors: {
-            type: DataTypes.TEXT,
-            allowNull: false,
-            get() {
-                const value = this.getDataValue("motherboardFormfactors");
-                try {
-                    return value ? JSON.parse(value) : [];
-                } catch (e) {
-                    console.error(e);
-                    return [];
-                }
-            },
-            set(value) {
-                this.setDataValue("motherboardFormfactors", JSON.stringify(value));
-            },
-        },
         maxCoolerHeight: { type: DataTypes.INTEGER, allowNull: false },
         maxVideocardHeight: { type: DataTypes.INTEGER, allowNull: false },
         sizes: { type: DataTypes.STRING, allowNull: false },
@@ -56,7 +44,9 @@ const Case = sequelize.define(
             },
         },
     },
-    { timestamps: false }
+    {
+        timestamps: false,
+    }
 );
 
 module.exports = Case;

@@ -1,4 +1,4 @@
-const { Op, DataTypes } = require("sequelize");
+const { Op } = require("sequelize");
 const models = require("../models/index.js");
 const { hardwares, FILTER_MODEL_TYPES, FILTER_TYPES } = require("../utility/constants.js");
 
@@ -14,6 +14,30 @@ function validateNumber(num) {
     return validNum;
 }
 
+const coModels = [];
+function filterRaws(obj) {
+    let rows;
+    for (const coModel of coModels) {
+        rows = obj.rows.filter(item => {
+            const names = item[coModel.model].map(f => f.name);
+            return coModel.values.every(name => names.includes(name));
+        });
+    }
+    coModels.length = 0;
+    return {
+        ...obj,
+        rows: rows || obj.rows,
+    };
+}
+const replaceOrAdd = (arr, el, key) => {
+    const existingIndex = arr.findIndex(e => e[key] === el[key]);
+
+    if (existingIndex >= 0) {
+        arr[existingIndex] = el;
+    } else {
+        arr.push(el);
+    }
+};
 const hardwaresController = {};
 hardwares.forEach(hardware => {
     const modelController = {};
@@ -34,6 +58,10 @@ hardwares.forEach(hardware => {
         });
         const where = [];
         const order = [];
+        const include = Object.values(model.associations).map(assoc => ({
+            model: assoc.target,
+        }));
+
         Object.keys(validatedParams).forEach(sortKey => {
             let sortValue;
             if (Number(validatedParams[sortKey]) === 0) return;
@@ -56,27 +84,50 @@ hardwares.forEach(hardware => {
                         where.push({ [filterKey]: { [Op.in]: filters[filterKey] } });
                         break;
                     }
-                    case FILTER_TYPES.selectorJSON: {
+                    case FILTER_TYPES.selectorWithForeign: {
                         if (filters[filterKey].length === 0) break;
-
-                        where.push({
-                            [Op.and]: filters[filterKey].map(value => ({
-                                [filterKey]: {
-                                    [Op.like]: `%\\"${value}\\"%`,
+                        replaceOrAdd(
+                            include,
+                            {
+                                model: models[filterTypes[filterKey].foreign],
+                                where: {
+                                    name: { [Op.in]: filters[filterKey] },
                                 },
-                            })),
+                            },
+                            "model"
+                        );
+
+                        break;
+                    }
+                    case FILTER_TYPES.selectorWithManyForeign: {
+                        if (filters[filterKey].length === 0) break;
+                        const foreignCoModel = models[filterTypes[filterKey].foreign.coModel];
+                        coModels.push({
+                            model: filterTypes[filterKey].foreign.coModel + "s",
+                            values: filters[filterKey],
                         });
+                        replaceOrAdd(
+                            include,
+                            {
+                                model: foreignCoModel,
+                                through: { attributes: [] },
+                            },
+                            "model"
+                        );
                         break;
                     }
                 }
             });
         }
-        const components = await model.findAndCountAll({
-            where: { [Op.and]: where },
-            limit,
-            offset,
-            order,
-        });
+        const components = filterRaws(
+            await model.findAndCountAll({
+                where: { [Op.and]: where },
+                include,
+                limit,
+                offset,
+                order,
+            })
+        );
 
         res.json(components);
     };

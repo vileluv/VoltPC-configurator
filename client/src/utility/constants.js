@@ -17,5 +17,6 @@ export const ITEMS_LIST = [
 export const FILTER_TYPES = {
     interval: "interval",
     selector: "selector",
-    selectorJSON: "selectorJSON",
+    selectorWithForeign: "selectorWithForeign",
+    selectorWithManyForeign: "selectorWithManyForeign",
 };

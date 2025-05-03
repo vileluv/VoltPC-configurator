@@ -3,11 +3,12 @@ const userRoles = {
     USER: "USER",
 };
 const hardwares = ["Case", "Cooler", "Motherboard", "Power", "Processor", "Ram", "Storage", "Videocard"];
-
+const foreigns = ["StorageInterface", "FormFactor", "RamType", "Socket", "CaseFormFactor", "CoolerSocket"];
 const FILTER_TYPES = {
     interval: "interval",
     selector: "selector",
-    selectorJSON: "selectorJSON",
+    selectorWithForeign: "selectorWithForeign",
+    selectorWithManyForeign: "selectorWithManyForeign",
 };
 const FILTER_MODEL_TYPES = {
     processor: {
@@ -15,10 +16,11 @@ const FILTER_MODEL_TYPES = {
         brand: { title: "Производитель", type: FILTER_TYPES.selector },
         model: { title: "Линейка", type: FILTER_TYPES.selector },
         price: { title: "Цена", type: FILTER_TYPES.interval },
-        socket: {
+        SocketId: {
             title: "Сокет",
-            type: FILTER_TYPES.selector,
-            relations: { motherboard: "socket", cooler: "sockets" },
+            type: FILTER_TYPES.selectorWithForeign,
+            foreign: "Socket",
+            relations: { motherboard: "Socket", cooler: "Socket" },
         },
         speed: { title: "Тактовая частота", type: FILTER_TYPES.interval },
         cores: { title: "Ядра", type: FILTER_TYPES.selector },
@@ -31,27 +33,45 @@ const FILTER_MODEL_TYPES = {
     motherboard: {
         brand: { title: "Производитель", type: FILTER_TYPES.selector },
         price: { title: "Цена", type: FILTER_TYPES.interval },
-        socket: {
+        SocketId: {
             title: "Сокет",
-            type: FILTER_TYPES.selector,
-            relations: { processor: "socket", cooler: "sockets" },
+            type: FILTER_TYPES.selectorWithForeign,
+            foreign: "Socket",
+            relations: { processor: "Socket", cooler: "Socket" },
         },
         chipset: { title: "Чипсет", type: FILTER_TYPES.selector },
-        formfactor: {
+        FormFactorId: {
             title: "Форм-фактор",
-            type: FILTER_TYPES.selector,
-            relations: { case: "motherboardFormfactors" },
+            type: FILTER_TYPES.selectorWithForeign,
+            foreign: "FormFactor",
+            relations: { case: "FormFactor" },
         },
-        ramType: { title: "Тип памяти", type: FILTER_TYPES.selector, relations: { ram: "memoryType" } },
+        RamTypeId: {
+            title: "Тип памяти",
+            type: FILTER_TYPES.selectorWithForeign,
+            foreign: "RamType",
+            relations: { ram: "RamType" },
+        },
+        StorageInterfaceId: {
+            title: "Интерфейс подключения хранилища",
+            type: FILTER_TYPES.selectorWithForeign,
+            foreign: "StorageInterface",
+            relations: { storage: "StorageInterface" },
+        },
         maxRamAmount: { title: "Количество слотов памяти", type: FILTER_TYPES.selector },
         m2Amount: { title: "Количество слотов M2", type: FILTER_TYPES.selector },
-        cpuPins: { title: "Питание процессора", type: FILTER_TYPES.selector, relations: { power: "cpuPinType" } },
+        cpuPins: { title: "Питание процессора", type: FILTER_TYPES.selector },
     },
     ram: {
         brand: { title: "Производитель", type: FILTER_TYPES.selector },
         price: { title: "Цена", type: FILTER_TYPES.interval },
         formfactor: { title: "Форм-фактор", type: FILTER_TYPES.selector },
-        memoryType: { title: "Тип памяти", type: FILTER_TYPES.selector, relations: { motherboard: "ramType" } },
+        RamTypeId: {
+            title: "Тип памяти",
+            type: FILTER_TYPES.selectorWithForeign,
+            foreign: "RamType",
+            relations: { motherboard: "RamType" },
+        },
         memoryVolume: { title: "Объём памяти", type: FILTER_TYPES.selector },
         oneMemoryVolume: { title: "Объём одного модуля", type: FILTER_TYPES.selector },
         moduleAmount: { title: "Количество модулей", type: FILTER_TYPES.selector },
@@ -65,10 +85,11 @@ const FILTER_MODEL_TYPES = {
         brand: { title: "Производитель", type: FILTER_TYPES.selector },
         price: { title: "Цена", type: FILTER_TYPES.interval },
         typefactor: { title: "Типоразмер", type: FILTER_TYPES.selector },
-        motherboardFormfactors: {
+        FormFactorId: {
             title: "Форм-фактор материнской платы",
-            type: FILTER_TYPES.selectorJSON,
-            relations: { motherboard: "formfactor" },
+            type: FILTER_TYPES.selectorWithManyForeign,
+            foreign: { model: "CaseFormFactor", coModel: "FormFactor" },
+            relations: { motherboard: "FormFactor" },
         },
         maxCoolerHeight: {
             title: "Максимальная высота кулера",
@@ -95,7 +116,7 @@ const FILTER_MODEL_TYPES = {
         fanSize: { title: "Размер вентилятора", type: FILTER_TYPES.selector },
         certificate: { title: "Сертификат", type: FILTER_TYPES.selector },
         motherboardPinType: { title: "Тип разъёма материнской платы", type: FILTER_TYPES.selector },
-        cpuPinType: { title: "Тип питания CPU", type: FILTER_TYPES.selector, relations: { motherboard: "cpuPins" } },
+        cpuPinType: { title: "Тип питания CPU", type: FILTER_TYPES.selector },
         pciePinType: { title: "Тип питания PCI-E", type: FILTER_TYPES.selector },
         idePinType: { title: "Тип питания IDE", type: FILTER_TYPES.selector },
         sataPinType: { title: "Тип питания SATA", type: FILTER_TYPES.selector },
@@ -110,7 +131,6 @@ const FILTER_MODEL_TYPES = {
         price: { title: "Цена", type: FILTER_TYPES.interval },
         interface: { title: "Интерфейс", type: FILTER_TYPES.selector },
         fanAmount: { title: "Количество вентиляторов", type: FILTER_TYPES.selector },
-        connectors: { title: "Разъём", type: FILTER_TYPES.selectorJSON },
         nanometers: { title: "Техпроцесс", type: FILTER_TYPES.selector },
         clockSpeed: { title: "Тактовая частота", type: FILTER_TYPES.interval },
         maxResolution: { title: "Максимальное разрешение", type: FILTER_TYPES.selector },
@@ -125,7 +145,12 @@ const FILTER_MODEL_TYPES = {
     cooler: {
         brand: { title: "Производитель", type: FILTER_TYPES.selector },
         price: { title: "Цена", type: FILTER_TYPES.interval },
-        sockets: { title: "Сокет", type: FILTER_TYPES.selectorJSON, relations: { motherboard: "socket" } },
+        SocketId: {
+            title: "Сокет",
+            type: FILTER_TYPES.selectorWithManyForeign,
+            foreign: { model: "CoolerSocket", coModel: "Socket" },
+            relations: { motherboard: "Socket" },
+        },
         maxTdp: { title: "Максимальная рассеиваемая мощность", type: FILTER_TYPES.interval },
         material: { title: "Материал", type: FILTER_TYPES.selector },
         height: { title: "Высота", type: FILTER_TYPES.interval, relations: { case: "maxCoolerHeight" } },
@@ -139,7 +164,12 @@ const FILTER_MODEL_TYPES = {
         price: { title: "Цена", type: FILTER_TYPES.interval },
         type: { title: "Тип накопителя", type: FILTER_TYPES.selector },
         formfactor: { title: "Форм-фактор", type: FILTER_TYPES.selector },
-        interface: { title: "Интерфейс", type: FILTER_TYPES.selector },
+        StorageInterfaceId: {
+            title: "Интерфейс подключения",
+            type: FILTER_TYPES.selectorWithForeign,
+            foreign: "StorageInterface",
+            relations: { motherboard: "StorageInterface" },
+        },
         memorySize: { title: "Объём памяти", type: FILTER_TYPES.selector },
         spindleSpeed: { title: "Скорость вращения шпинделя", type: FILTER_TYPES.selector },
         readSpeed: { title: "Скорость чтения", type: FILTER_TYPES.interval },
@@ -147,4 +177,4 @@ const FILTER_MODEL_TYPES = {
     },
 };
 
-module.exports = { userRoles, hardwares, FILTER_MODEL_TYPES, FILTER_TYPES };
+module.exports = { userRoles, hardwares, foreigns, FILTER_MODEL_TYPES, FILTER_TYPES };

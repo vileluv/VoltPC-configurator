@@ -1,5 +1,5 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../utility/database.js");
+const { DataTypes, col } = require("sequelize");
+const sequelize = require("../../utility/database.js");
 
 const Cooler = sequelize.define(
     "Cooler",
@@ -10,30 +10,18 @@ const Cooler = sequelize.define(
         price: { type: DataTypes.FLOAT, allowNull: false },
         img: { type: DataTypes.STRING, allowNull: false },
         releaseDate: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             allowNull: false,
             get() {
                 const value = this.getDataValue("releaseDate");
-                return new Date(value).getDate();
+                return new Date(value).toLocaleDateString("ru-RU", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                });
             },
             set(value) {
                 this.setDataValue("releaseDate", new Date(value).toISOString());
-            },
-        },
-        sockets: {
-            type: DataTypes.TEXT,
-            allowNull: false,
-            get() {
-                const value = this.getDataValue("sockets");
-                try {
-                    return value ? JSON.parse(value) : [];
-                } catch (e) {
-                    console.error(e);
-                    return [];
-                }
-            },
-            set(value) {
-                this.setDataValue("sockets", JSON.stringify(value));
             },
         },
         maxTdp: { type: DataTypes.INTEGER, allowNull: false },
@@ -55,7 +43,9 @@ const Cooler = sequelize.define(
             },
         },
     },
-    { timestamps: false }
+    {
+        timestamps: false,
+    }
 );
 
 module.exports = Cooler;

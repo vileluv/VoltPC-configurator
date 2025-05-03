@@ -49,9 +49,17 @@ function Item({ children, itemName, itemType, count, require = false, ...props }
                                 filter.addFilters(element, intervalValue);
                                 break;
                             }
-                            case FILTER_TYPES.selectorJSON:
+
                             case FILTER_TYPES.selector: {
                                 filter.addFilters(element, [componentValue].flat());
+                                break;
+                            }
+                            case FILTER_TYPES.selectorWithForeign:
+                            case FILTER_TYPES.selectorWithManyForeign: {
+                                filter.addFilters(
+                                    element,
+                                    [componentValue].flat().map(val => val.name)
+                                );
                                 break;
                             }
                             default: {
@@ -149,6 +157,7 @@ function Item({ children, itemName, itemType, count, require = false, ...props }
                                                 return true;
                                             })
                                             .includes(true);
+
                                         return (
                                             <FilterComponent
                                                 key={element}
