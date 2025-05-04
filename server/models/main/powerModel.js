@@ -40,7 +40,7 @@ const Power = sequelize.define(
         fullName: {
             type: DataTypes.VIRTUAL,
             get() {
-                return `${this.brand} ${this.name}`;
+                return `${this.brand} ${this.name} ${this.power} Вт`;
             },
             set(value) {
                 console.error("Do not try to set the `fullName` value!");

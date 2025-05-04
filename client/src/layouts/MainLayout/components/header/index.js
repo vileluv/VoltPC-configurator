@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Context } from "../../../../index.js";
 import { observer } from "mobx-react-lite";
 import { saveCodeConf } from "../../../../api/userAPI.js";
+import { ABOUT_ROUTE, FAQ_ROUTE, MAIN_ROUTE, WARRANTY_ROUTE } from "../../../../utility/constants.js";
 
 function Header() {
     const { user, configurator } = useContext(Context);
@@ -11,11 +12,14 @@ function Header() {
     return (
         <header className={styles.header}>
             <div className={styles.header__inner}>
-                <h1 className={styles.logo}>Конфигуратор</h1>
+                <Link to={MAIN_ROUTE}>
+                    <img className={styles.logo} src="logo.png" alt="Конфигуратор"></img>
+                </Link>
+
                 <nav className={styles.nav}>
-                    <Link to="/">Конфигуратор</Link>
-                    <Link to="/">Конфигуратор</Link>
-                    <Link to="/">Конфигуратор</Link>
+                    <Link to={FAQ_ROUTE}>FAQ</Link>
+                    <Link to={WARRANTY_ROUTE}>Гарантия</Link>
+                    <Link to={ABOUT_ROUTE}>О конфигураторе</Link>
                 </nav>
                 {user.isAuth ? (
                     <div className={styles.profile}>

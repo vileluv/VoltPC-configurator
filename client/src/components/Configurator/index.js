@@ -5,12 +5,19 @@ import Item from "../Item/index.js";
 import Input from "../common/Input/index.js";
 import { observer } from "mobx-react-lite";
 import { Context } from "../../index.js";
-import { getHardwaresFromCode } from "../../api/configuratorAPI.js";
+import { getHardwaresFromCode, getHardwaresWithFilters } from "../../api/configuratorAPI.js";
 import Spinner from "../Spinner/index.js";
 import Button from "../common/Button/index.js";
+import HardwareComponent from "../HardwareComponent/index.js";
+import { reaction } from "mobx";
 function Configurator() {
     const [confCode, setConfCode] = useState("");
+    const confCodeRef = useRef(confCode);
+    useEffect(() => {
+        confCodeRef.current = confCode;
+    }, [confCode]);
     const [loading, setLoading] = useState(false);
+    const [recomendedPower, setRecomendedPower] = useState({});
     const { configurator } = useContext(Context);
     const isFirstRender = useRef(true);
 
@@ -29,7 +36,6 @@ function Configurator() {
         if (isFirstRender.current) {
             return;
         }
-
         try {
             JSON.parse(atob(confCode));
             setLoading(true);
@@ -48,13 +54,43 @@ function Configurator() {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [confCode]);
+
     useEffect(() => {
-        if (isFirstRender.current) {
-            return;
-        }
-        if (configurator.confCode !== confCode) setConfCode("");
+        const disposer = reaction(
+            () => configurator.confCode,
+            storeConfcode => {
+                if (storeConfcode !== confCodeRef.current) setConfCode("");
+            }
+        );
+        return () => disposer();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [configurator.confCode]);
+    }, []);
+
+    useEffect(() => {
+        const disposer = reaction(
+            () => configurator.consumption,
+            consumption => {
+                if (consumption <= 0) return;
+                setLoading(true);
+                getHardwaresWithFilters("power", { power: { min: Number(consumption) * 1.15, max: null } }, 1, 1, {
+                    power: 1,
+                })
+                    .then(res => {
+                        setRecomendedPower(res?.rows?.[0]);
+                    })
+                    .catch(() => {
+                        //TODO
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                    });
+            }
+        );
+        return () => disposer();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     useEffect(() => {
         isFirstRender.current = false;
     }, []);
@@ -99,9 +135,23 @@ function Configurator() {
                     <span className={styles.placeholder}>Выберите комплектующие</span>
                 ) : (
                     <>
-                        <div className={styles.power}></div>
+                        <div className={styles.wrapper}>
+                            <div className={styles.title}>Рекомендуемый блок питания</div>
+                            {Object.keys(recomendedPower).length > 0 ? (
+                                <HardwareComponent
+                                    vertical
+                                    type={"power"}
+                                    values={recomendedPower}
+                                    onButtonClick={() => {
+                                        configurator.setComponent("power", recomendedPower);
+                                    }}
+                                />
+                            ) : (
+                                <div className={styles.warn}>Нет подходящего блока питания</div>
+                            )}
+                        </div>
                         <div className={styles.powerinfo}>
-                            Предполагаемое потребление : {configurator.getConsumption()} Вт
+                            Предполагаемое потребление : {configurator.consumption} Вт
                         </div>
                         <Button
                             className={styles.getconfbtn}

@@ -60,10 +60,19 @@
         align-items: center;
         justify-content: center;
         gap: 1em;
-
-        .visualisator {
-        }
-        .visualinfo {
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: start;
+            .title {
+                font-size: 1.2em;
+                font-weight: 500;
+            }
+            .warn {
+                padding: 5em 0;
+                color: variables.$attention-color;
+            }
         }
         .getconfbtn {
             width: 16em;

@@ -1,15 +1,17 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import styles from "./HardwareComponent.module.scss";
 import { observer } from "mobx-react-lite";
 import { Context } from "../../index.js";
 import Button from "../common/Button/index.js";
+import multiModuleStyles from "../../utility/multiModuleStyles.js";
+import { host } from "../../api/index.js";
 
-function HardwareComponent({ children, type, values, onButtonClick, ...props }) {
+function HardwareComponent({ children, type, values, onButtonClick, className, vertical, ...props }) {
     const { configurator } = useContext(Context);
 
     return (
-        <div className={styles.root} {...props}>
-            <img alt={values.name} className={styles.image}></img>
+        <div className={multiModuleStyles(styles.root, className, vertical ? styles.vertical : "")} {...props}>
+            <img src={`${host.getUri()}${values?.img}`} alt={values.name} className={styles.image}></img>
             <div className={styles.description}>{values.fullName}</div>
             <div className={styles.price}>{values.price} ₽</div>
             <div className={styles.btnwrapper}>

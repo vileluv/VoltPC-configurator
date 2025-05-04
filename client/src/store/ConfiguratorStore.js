@@ -10,11 +10,13 @@ export default class ConfiguratorStore {
         this._storage = {};
         this._videocard = {};
         this._confcode = "";
+        this._consumption = 0;
         makeAutoObservable(this);
     }
     setComponent(type, obj) {
         this["_" + type] = obj;
         this.generateCode();
+        this.computeConsumption();
     }
     getComponent(type) {
         return this["_" + type];
@@ -24,6 +26,7 @@ export default class ConfiguratorStore {
             this["_" + Object.keys(component)[0]] = Object.values(component)[0];
         });
         this.generateCode();
+        this.computeConsumption();
     }
     clearComponents() {
         this._case = {};
@@ -35,6 +38,7 @@ export default class ConfiguratorStore {
         this._storage = {};
         this._videocard = {};
         this.generateCode();
+        this.computeConsumption();
     }
     isEmpty(type) {
         if (type === undefined) {
@@ -51,15 +55,15 @@ export default class ConfiguratorStore {
         this._confcode = btoa(
             JSON.stringify(
                 Object.entries(this)
-                    .filter(f => f[0] !== "_confcode" && f[1]?.id !== undefined)
+                    .filter(f => f[0] !== "_confcode" && f[0] !== "_consumption" && f[1]?.id !== undefined)
                     .map(element => {
                         return { [element[0].replace("_", "")]: element[1]?.id };
                     })
             )
         );
     }
-    getConsumption() {
-        return Math.ceil(
+    computeConsumption() {
+        this._consumption = Math.ceil(
             (this._processor.tdp || 0) * 1.1 +
                 (this._videocard.power || 0) +
                 (this._motherboard.id ? 40 : 0) +
@@ -70,5 +74,8 @@ export default class ConfiguratorStore {
     }
     get confCode() {
         return this._confcode;
+    }
+    get consumption() {
+        return this._consumption;
     }
 }

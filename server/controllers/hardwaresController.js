@@ -76,7 +76,18 @@ hardwares.forEach(hardware => {
                 if (filters[filterKey] === undefined) return;
                 switch (filterTypes[filterKey].type) {
                     case FILTER_TYPES.interval: {
-                        where.push({ [filterKey]: { [Op.between]: [filters[filterKey].min, filters[filterKey].max] } });
+                        const min = filters[filterKey].min || null;
+                        const max = filters[filterKey].max || null;
+                        const priceFilter = {};
+
+                        if (min !== null) priceFilter[Op.gte] = min;
+                        if (max !== null) priceFilter[Op.lte] = max;
+                        if (Object.keys(priceFilter).length > 0) {
+                            where.push({
+                                [filterKey]: priceFilter,
+                            });
+                        }
+
                         break;
                     }
                     case FILTER_TYPES.selector: {

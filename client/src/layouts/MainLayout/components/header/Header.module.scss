@@ -16,8 +16,11 @@
         max-width: variables.$container-width;
         margin: 0 auto;
         .logo {
-            font-size: 1.5em;
-            font-weight: bold;
+            width: 12em;
+            height: 3em;
+            object-fit: cover;
+            object-position: 50% 50%;
+            cursor: pointer;
         }
         .nav a {
             margin: 0 1em;

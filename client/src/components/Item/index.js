@@ -166,8 +166,8 @@ function Item({ children, itemName, itemType, count, require = false, ...props }
                                                 filterType={filterInfo.type}
                                                 interval={filterInfo.values}
                                                 selector={filterInfo.values}
-                                                preSelected={condition && filter.filters[element]}
-                                                preIntervalData={condition && filter.filters[element]}
+                                                preSelected={condition ? filter.filters[element] : []}
+                                                preIntervalData={condition ? filter.filters[element] : { min: null }}
                                                 disabled={condition}
                                             />
                                         );

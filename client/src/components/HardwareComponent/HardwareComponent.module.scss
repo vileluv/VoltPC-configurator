@@ -7,8 +7,7 @@
     align-items: center;
     width: 100%;
     border-bottom: 1px solid variables.$border-color;
-    padding: 1em 2em 0em 2em;
-
+    padding: 1em 2em 0.5em 2em;
     height: fit-content;
 
     .image {
@@ -41,6 +40,40 @@
             padding-left: 1em;
             padding-right: 2em;
             color: color.scale(variables.$primary-color-green, $blackness: 40%);
+        }
+    }
+}
+.vertical {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 0.4em;
+
+    .image {
+        width: 10em;
+        height: 10em;
+    }
+    .description {
+        width: 15em;
+        overflow: visible;
+        text-overflow: clip;
+        word-break: keep-all;
+        white-space: wrap;
+    }
+    .price {
+        width: 10em;
+        margin-left: 0em;
+    }
+    .btnwrapper {
+        flex: 0;
+        .btn {
+            font-size: 0.8em;
+            width: fit-content;
+        }
+        .current {
+            padding-left: 0em;
+            padding-right: 0em;
         }
     }
 }
