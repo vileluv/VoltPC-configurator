@@ -42,11 +42,8 @@ function Item({ children, itemName, itemType, count, require = false, ...props }
                     if (filter.filters[element] === undefined) {
                         switch (reqFilters[element]?.type) {
                             case FILTER_TYPES.interval: {
-                                const intervalValue = { min: componentValue, max: reqFilters[element]?.values?.max };
-                                if (componentValue > reqFilters[element]?.values?.max) {
-                                    intervalValue.max = intervalValue.min;
-                                    intervalValue.min = reqFilters[element]?.values?.min;
-                                }
+                                const intervalValue = { min: reqFilters[element]?.values?.min, max: componentValue };
+                                
                                 filter.addFilters(element, intervalValue);
                                 break;
                             }
