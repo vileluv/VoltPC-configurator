@@ -11,9 +11,10 @@ const Storage = sequelize.define(
         img: { type: DataTypes.STRING, allowNull: false },
         releaseDate: {
             type: DataTypes.DATEONLY,
-            allowNull: false,
+            allowNull: true,
             get() {
                 const value = this.getDataValue("releaseDate");
+                if (value===null) return null
                 return new Date(value).toLocaleDateString("ru-RU", {
                     day: "2-digit",
                     month: "2-digit",

@@ -72,6 +72,9 @@ const HardwarePage = observer(() => {
                             .map(element => {
                                 const value =
                                     hardware[HARDWARE_SPECIFICATIONS[type][element]?.foreign]?.name ||
+                                    hardware[HARDWARE_SPECIFICATIONS[type][element]?.foreign]
+                                        ?.map(e => e.name)
+                                        ?.toString() ||
                                     hardware[element];
                                 const title = HARDWARE_SPECIFICATIONS[type][element]?.title;
 

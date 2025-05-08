@@ -116,7 +116,7 @@ export const HARDWARE_SPECIFICATIONS = {
         FormFactorId: {
             title: "Форм-фактор материнской платы",
             inputType: INPUT_TYPES.select,
-            foreign: "FormFactor",
+            foreign: "FormFactors",
         },
         maxCoolerHeight: {
             title: "Максимальная высота кулера",
@@ -186,7 +186,7 @@ export const HARDWARE_SPECIFICATIONS = {
         SocketId: {
             title: "Сокет",
             inputType: INPUT_TYPES.select,
-            foreign: "Socket",
+            foreign: "Sockets",
         },
         maxTdp: { title: "Максимальная рассеиваемая мощность", inputType: INPUT_TYPES.number },
         material: { title: "Материал", inputType: INPUT_TYPES.text },

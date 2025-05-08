@@ -38,7 +38,7 @@ function Configurator() {
             power: 1,
         })
             .then(res => {
-                setRecomendedPower(res?.rows?.[0]);
+                setRecomendedPower(res?.rows?.[0]||{});
             })
             .catch(() => {})
             .finally(() => {
@@ -187,7 +187,7 @@ function Configurator() {
                                     )}
                                     ₽
                                 </div>
-                                <Button className={styles.modalbtn}>Собрать</Button>
+                                <Button className={styles.modalbtn}>Купить</Button>
                             </div>
                         </Modal>
                     </>
