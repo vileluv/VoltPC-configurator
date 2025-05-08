@@ -34,7 +34,7 @@ const Storage = sequelize.define(
         fullName: {
             type: DataTypes.VIRTUAL,
             get() {
-                return `${this.brand} ${this.model} ${this.type} ${this.StorageInterface?.name} `;
+                return `${this.brand} ${this.name} ${this.type} ${this.StorageInterface?.name} `;
             },
             set(value) {
                 console.error("Do not try to set the `fullName` value!");

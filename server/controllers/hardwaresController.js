@@ -1,6 +1,7 @@
 const { Op } = require("sequelize");
 const models = require("../models/index.js");
 const { hardwares, FILTER_MODEL_TYPES, FILTER_TYPES } = require("../utility/constants.js");
+const ApiError = require("../utility/apiError.js");
 
 const MAX_LIMIT = 100;
 function validateNumber(num) {
@@ -19,7 +20,7 @@ function filterRaws(obj) {
     let rows;
     for (const coModel of coModels) {
         rows = obj.rows.filter(item => {
-            const names = item[coModel.model].map(f => f.name);
+            const names = item[coModel.model]?.map(f => f.name) || [];
             return coModel.values.every(name => names.includes(name));
         });
     }
@@ -48,6 +49,7 @@ hardwares.forEach(hardware => {
         let { data: filters } = req.body;
         page = validateNumber(page);
         limit = validateNumber(limit);
+
         const offset = page * limit - limit;
 
         const fields = Object.keys(model.getAttributes());
@@ -82,7 +84,7 @@ hardwares.forEach(hardware => {
 
                         if (min !== null) priceFilter[Op.gte] = min;
                         if (max !== null) priceFilter[Op.lte] = max;
-                        if (Object.keys(priceFilter).length > 0) {
+                        if (Reflect.ownKeys(priceFilter).length > 0) {
                             where.push({
                                 [filterKey]: priceFilter,
                             });
@@ -144,15 +146,35 @@ hardwares.forEach(hardware => {
     };
     modelController.getOne = async (req, res) => {
         const { id } = req.params;
-        const device = await model.findOne({ where: { id } });
+        const include = Object.values(model.associations).map(assoc => ({
+            model: assoc.target,
+        }));
+        const device = await model.findOne({ where: { id }, include });
         return res.json(device);
     };
-    modelController.create = async (req, res) => {
+    modelController.create = async (req, res, next) => {
         let { data } = req.body;
-        const component = await model.create(data);
-        res.status(201).json(component);
+        try {
+            const component = await model.create(data);
+            res.status(201).json(component);
+        } catch (err) {
+            next(ApiError.badRequest("Failed create hardware. Check fields for correctness."));
+        }
     };
-    modelController.getHardwareModel = (req, res) => {
+    modelController.delete = async (req, res, next) => {
+        let { id } = req.query;
+        if (id === undefined) {
+            next(ApiError.badRequest("Id is invalid"));
+            return;
+        }
+        const des = await model.destroy({
+            where: {
+                id,
+            },
+        });
+        res.status(201).json(des);
+    };
+    modelController.getHardwareModel = async (req, res) => {
         const attributes = Object.keys(model.rawAttributes).filter(
             attribute => attribute !== "fullName" && attribute !== "id"
         );

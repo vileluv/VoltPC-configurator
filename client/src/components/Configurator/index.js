@@ -10,6 +10,7 @@ import Spinner from "../Spinner/index.js";
 import Button from "../common/Button/index.js";
 import HardwareComponent from "../HardwareComponent/index.js";
 import { reaction } from "mobx";
+import Modal from "../Modal/index.js";
 function Configurator() {
     const [confCode, setConfCode] = useState("");
     const confCodeRef = useRef(confCode);
@@ -31,6 +32,19 @@ function Configurator() {
         }
         return true;
     }
+    function getPowerRequest(consumption) {
+        setLoading(true);
+        getHardwaresWithFilters("power", { power: { min: Math.ceil(Number(consumption) * 1.15), max: null } }, 1, 1, {
+            power: 1,
+        })
+            .then(res => {
+                setRecomendedPower(res?.rows?.[0]);
+            })
+            .catch(() => {})
+            .finally(() => {
+                setLoading(false);
+            });
+    }
     const isRequireFull = checkRequire();
     useEffect(() => {
         if (isFirstRender.current) {
@@ -43,9 +57,7 @@ function Configurator() {
                 .then(res => {
                     configurator.setComponents(res);
                 })
-                .catch(() => {
-                    //TODO
-                })
+                .catch(() => {})
                 .finally(() => {
                     setLoading(false);
                 });
@@ -67,23 +79,12 @@ function Configurator() {
     }, []);
 
     useEffect(() => {
+        getPowerRequest(configurator.consumption);
         const disposer = reaction(
             () => configurator.consumption,
             consumption => {
                 if (consumption <= 0) return;
-                setLoading(true);
-                getHardwaresWithFilters("power", { power: { min: Number(consumption) * 1.15, max: null } }, 1, 1, {
-                    power: 1,
-                })
-                    .then(res => {
-                        setRecomendedPower(res?.rows?.[0]);
-                    })
-                    .catch(() => {
-                        //TODO
-                    })
-                    .finally(() => {
-                        setLoading(false);
-                    });
+                getPowerRequest(consumption);
             }
         );
         return () => disposer();
@@ -161,16 +162,34 @@ function Configurator() {
                         >
                             Скопировать код конфигурации
                         </Button>
-                        <Button
-                            className={styles.getconfbtn}
+                        <Modal
+                            btnClassName={styles.getconfbtn}
+                            btnName={isRequireFull ? "Собрать" : "Недостаточно комплектующих"}
                             danger={!isRequireFull}
                             disabled={!isRequireFull}
-                            onClick={() => {
-                                //TODO
-                            }}
                         >
-                            {isRequireFull ? "Собрать" : "Недостаточно комплектующих"}
-                        </Button>
+                            <div className={styles.modal}>
+                                <div className={styles.modal__header}>
+                                    <h2 className={styles.title}>Сборка заказа</h2>
+                                </div>
+                                <div className={styles.hardwares}>
+                                    {configurator.getComponents().map((e, i) => (
+                                        <HardwareComponent values={e} key={i + e.name} withoutBtn />
+                                    ))}
+                                </div>
+                                <div className={styles.priceinfo}>
+                                    Общая стоимость:&nbsp;
+                                    {configurator.getComponents().reduce(
+                                        (acc, value) => {
+                                            return Number(acc) + Number(value.price);
+                                        },
+                                        [0]
+                                    )}
+                                    ₽
+                                </div>
+                                <Button className={styles.modalbtn}>Собрать</Button>
+                            </div>
+                        </Modal>
                     </>
                 )}
             </aside>

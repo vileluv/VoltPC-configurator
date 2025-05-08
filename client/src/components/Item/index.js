@@ -13,6 +13,7 @@ import multiModuleStyles from "../../utility/multiModuleStyles.js";
 import Input from "../common/Input/index.js";
 import validateNumber from "../../utility/validateNumber.js";
 import { FILTER_TYPES } from "../../utility/constants.js";
+import { Link } from "react-router-dom";
 
 function Item({ children, itemName, itemType, count, require = false, ...props }) {
     const { filter, configurator } = useContext(Context);
@@ -88,9 +89,7 @@ function Item({ children, itemName, itemType, count, require = false, ...props }
             .then(res => {
                 setHardwareArray(res?.rows || []);
             })
-            .catch(() => {
-                //TODO
-            })
+            .catch(() => {})
             .finally(() => {
                 scrollToTop();
                 setHardwareLoading(false);
@@ -115,7 +114,11 @@ function Item({ children, itemName, itemType, count, require = false, ...props }
                 <span className={styles.name}>{itemName}</span>
                 {require && <span className={styles.require}></span>}
             </div>
-            {id !== undefined && <div className={styles.body}>{fullName}</div>}
+            {id !== undefined && (
+                <Link to={`${itemType}/${id}`} className={styles.body}>
+                    {fullName}
+                </Link>
+            )}
             <div className={styles.actions}>
                 <Spinner isLoading={hardwareLoading} />
                 {id !== undefined && (

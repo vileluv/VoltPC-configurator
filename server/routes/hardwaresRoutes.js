@@ -11,6 +11,7 @@ hardwares.forEach(element => {
     router.post("/", controller.getAllWithFilters);
     router.get("/model", checkHandler(userRoles.ADMIN), controller.getHardwareModel);
     router.post("/create", checkHandler(userRoles.ADMIN), controller.create);
+    router.delete("/delete/:id", checkHandler(userRoles.ADMIN), controller.delete);
     router.get("/:id", controller.getOne);
 
     hardwaresRoutes[element] = router;

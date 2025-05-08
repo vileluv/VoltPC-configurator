@@ -115,7 +115,7 @@ const FILTER_MODEL_TYPES = {
         standart: { title: "Стандарт", type: FILTER_TYPES.selector },
         fanSize: { title: "Размер вентилятора", type: FILTER_TYPES.selector },
         certificate: { title: "Сертификат", type: FILTER_TYPES.selector },
-        motherboardPinType: { title: "Тип разъёма материнской платы", type: FILTER_TYPES.selector },
+        motherboardPinType: { title: "Тип питания материнской платы", type: FILTER_TYPES.selector },
         cpuPinType: { title: "Тип питания CPU", type: FILTER_TYPES.selector },
         pciePinType: { title: "Тип питания PCI-E", type: FILTER_TYPES.selector },
         idePinType: { title: "Тип питания IDE", type: FILTER_TYPES.selector },

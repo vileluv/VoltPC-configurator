@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, observable } from "mobx";
 export default class ConfiguratorStore {
     constructor() {
         this._case = {};
@@ -20,6 +20,13 @@ export default class ConfiguratorStore {
     }
     getComponent(type) {
         return this["_" + type];
+    }
+    getComponents() {
+        return Object.entries(this)
+            .filter(f => f[0] !== "_confcode" && f[0] !== "_consumption" && f[1]?.id !== undefined)
+            .map(element => {
+                return element[1];
+            });
     }
     setComponents(componentsArray) {
         componentsArray.forEach(component => {

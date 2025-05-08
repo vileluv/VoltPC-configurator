@@ -10,9 +10,9 @@ import { observer } from "mobx-react-lite";
 function AuthPage() {
     const [loginValue, setLoginValue] = useState("");
     const [passwordValue, setPasswordValue] = useState("");
+    const { user } = useContext(Context);
     const location = useLocation();
     const navigate = useNavigate();
-    const { user } = useContext(Context);
     const isLogin = location?.pathname === LOGIN_ROUTE;
     useEffect(() => {
         setLoginValue("");
@@ -31,9 +31,7 @@ function AuthPage() {
             user.setUser(data);
             user.setIsAuth(true);
             navigate(MAIN_ROUTE);
-        } catch (err) {
-            //TODO
-        }
+        } catch (err) {}
     };
     return (
         <div className={styles.root}>

@@ -16,11 +16,10 @@ body {
     scroll-behavior: smooth;
     font-size: variables.$global-font-size;
     line-height: 1.2;
-    .active-modal {
-        overflow-y: hidden;
-    }
 }
-
+.active-modal {
+    overflow-y: hidden;
+}
 button,
 a,
 a:hover {

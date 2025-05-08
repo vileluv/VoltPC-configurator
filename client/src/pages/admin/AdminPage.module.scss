@@ -1,4 +1,5 @@
 @use "../../styles/variables";
+@use "sass:color";
 .root {
     padding: 1em 0;
     display: flex;
@@ -12,33 +13,26 @@
         background-color: variables.$primary-color-light;
         padding: 1em 2em;
         border-radius: 0.4em;
-        h2 {
-            font-weight: 500;
-            font-size: 1.2em;
-        }
-        .adminheader {
-            display: flex;
+        .gridcontainer {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); // 2 элемента в строке
             gap: 1em;
-            align-items: center;
+            padding: 1em;
         }
-        .model {
-            display: flex;
-            flex-direction: column;
-            gap: 1em;
-            .wrapper {
-                display: flex;
-                gap: 1em;
-                align-items: center;
+
+        .griditem {
+            background-color: variables.$bg-light;
+            border: 1px solid variables.$border-color;
+            padding: 2em;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-radius: 0.5em;
+            transition: background 300ms;
+
+            &:hover {
+                background-color: color.scale(variables.$bg-light, $blackness: 20%);
             }
-        }
-        .inputcomponent {
-            width: 20em;
-        }
-        .label {
-            font-weight: 500;
-        }
-        .createbtn {
-            width: 10em;
         }
     }
 }

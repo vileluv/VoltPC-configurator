@@ -33,9 +33,7 @@ function App() {
                 .then(res => {
                     configurator.setComponents(res);
                 })
-                .catch(() => {
-                    //TODO
-                })
+                .catch(() => {})
                 .finally(() => {
                     setLoading(false);
                 });

@@ -39,7 +39,7 @@ const Processor = sequelize.define(
         fullName: {
             type: DataTypes.VIRTUAL,
             get() {
-                return `${this.brand} ${this.model} ${this.name} `;
+                return `${this.brand} ${this.name} ${this.model}`;
             },
             set(value) {
                 console.error("Do not try to set the `fullName` value!");

@@ -1,8 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Modal.module.scss";
 import Spinner from "../Spinner/index.js";
 import Button from "../common/Button/index.js";
 import { observer } from "mobx-react-lite";
+import multiModuleStyles from "../../utility/multiModuleStyles.js";
+
 function Modal({
     children,
     propsOnClick = () => {},
@@ -12,6 +14,9 @@ function Modal({
     btnName = "Button",
     loading = false,
     withButton = true,
+    btnClassName,
+    danger,
+    disabled,
     ...props
 }) {
     const [modal, setModal] = useState(false);
@@ -19,6 +24,11 @@ function Modal({
     useEffect(() => {
         if (modal) {
             propUseEffect();
+        }
+        if (modal || loading) {
+            document.body.classList.add("active-modal");
+        } else {
+            document.body.classList.remove("active-modal");
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [modal]);
@@ -33,23 +43,31 @@ function Modal({
     const handleContent = e => {
         e.stopPropagation();
     };
-    if (modal && !loading) {
-        document.body.classList.add("active-modal");
-    } else {
-        document.body.classList.remove("active-modal");
-    }
+
     return (
         <div className={styles.root} {...props}>
-            {withButton && (
+            {withButton ? (
                 <Button
                     onClick={() => {
                         toggleModal();
                         propsOnClick();
                     }}
-                    className={styles.modalbtn}
+                    className={multiModuleStyles(styles.modalbtn, btnClassName)}
+                    danger={danger}
+                    disabled={disabled}
                 >
                     {btnName}
                 </Button>
+            ) : (
+                <div
+                    className={btnClassName}
+                    onClick={() => {
+                        toggleModal();
+                        propsOnClick();
+                    }}
+                >
+                    {btnName}
+                </div>
             )}
             {loading ? (
                 <Spinner isLoading={loading} />

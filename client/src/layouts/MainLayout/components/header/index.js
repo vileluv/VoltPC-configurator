@@ -13,7 +13,7 @@ function Header() {
         <header className={styles.header}>
             <div className={styles.header__inner}>
                 <Link to={MAIN_ROUTE}>
-                    <img className={styles.logo} src="logo.png" alt="Конфигуратор"></img>
+                    <img className={styles.logo} src={window.location.origin + "/logo.png"} alt="Конфигуратор"></img>
                 </Link>
 
                 <nav className={styles.nav}>
@@ -39,9 +39,7 @@ function Header() {
                                             .then(res => {
                                                 user.setUser({ ...user.user, confcode: res });
                                             })
-                                            .catch(err => {
-                                                //TODO
-                                            });
+                                            .catch(err => {});
                                     }}
                                 >
                                     Сохранить конфигурацию

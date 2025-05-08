@@ -33,6 +33,9 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         width: 18em;
+        &:hover {
+            text-decoration: underline;
+        }
     }
     .actions {
         display: flex;
