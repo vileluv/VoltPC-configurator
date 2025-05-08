@@ -38,7 +38,7 @@ exports.getFilters = async (req, res, next) => {
                     group: [field],
                 });
 
-                const itemsArray = items.map(item => item[field]).filter(f => f !== undefined);
+                const itemsArray = items.map(item => item[field]).filter(f => f !== undefined && f !== null);
 
                 if (itemsArray.length === 0) {
                     filterField.values = undefined;
@@ -53,7 +53,7 @@ exports.getFilters = async (req, res, next) => {
                     attributes: ["name"],
                     group: ["name"],
                 });
-                const itemsArray = items.map(item => item["name"]).filter(f => f !== undefined);
+                const itemsArray = items.map(item => item["name"]).filter(f => f !== undefined && f !== null);
                 if (itemsArray.length === 0) {
                     filterField.values = undefined;
                     break;
@@ -74,7 +74,7 @@ exports.getFilters = async (req, res, next) => {
                 attributes: ["name"],
                 group: ["name"],
             });
-            const itemsArray = items.map(item => item["name"]).filter(f => f !== undefined);
+            const itemsArray = items.map(item => item["name"]).filter(f => f !== undefined && f !== null);
 
             if (itemsArray.length === 0) {
                 filterField.values = undefined;
