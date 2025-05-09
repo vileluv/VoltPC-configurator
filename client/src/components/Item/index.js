@@ -43,7 +43,10 @@ function Item({ children, itemName, itemType, count, require = false, ...props }
                         switch (reqFilters[element]?.type) {
                             case FILTER_TYPES.interval: {
                                 const intervalValue = { min: reqFilters[element]?.values?.min, max: componentValue };
-                                
+                                if (intervalValue.min > intervalValue.max) {
+                                    intervalValue.min = intervalValue.max;
+                                    intervalValue.max = reqFilters[element]?.values?.max;
+                                }
                                 filter.addFilters(element, intervalValue);
                                 break;
                             }
