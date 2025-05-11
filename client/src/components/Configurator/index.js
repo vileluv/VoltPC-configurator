@@ -174,9 +174,18 @@ function Configurator() {
                                     <h2 className={styles.title}>Сборка заказа</h2>
                                 </div>
                                 <div className={styles.hardwares}>
-                                    {configurator.getComponents().map((e, i) => (
-                                        <HardwareComponent values={e} key={i + e.name} withoutBtn />
-                                    ))}
+                                  {ITEMS_LIST.map((item, i) => {
+                                        const hardware = configurator.getComponent(item.type);
+                                        if (!hardware.id) return <></>
+                                        return (
+                                            <HardwareComponent
+                                                type={item.type}
+                                                values={hardware}
+                                                key={i + hardware.name}
+                                                withoutBtn
+                                            />
+                                        );
+                                    })}
                                 </div>
                                 <div className={styles.priceinfo}>
                                     Общая стоимость:&nbsp;
