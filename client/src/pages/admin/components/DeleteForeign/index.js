@@ -4,7 +4,6 @@ import Select from "../../../../components/common/Select/index.js";
 import { FOREIGNS_LIST, ITEMS_LIST } from "../../../../utility/constants.js";
 import { deleteForeign, getForeigns, getModel } from "../../../../api/adminAPI.js";
 import Spinner from "../../../../components/Spinner/index.js";
-import Input from "../../../../components/common/Input/index.js";
 import Button from "../../../../components/common/Button/index.js";
 import { getHardwaresWithFilters } from "../../../../api/configuratorAPI.js";
 function DeleteForeign() {
@@ -61,41 +60,55 @@ function DeleteForeign() {
                 </div>
 
                 <div className={styles.model}>
-                    {model.map(elem => {
-                        return (
-                            <div className={styles.wrapper} key={elem}>
-                                <div className={styles.label}>
-                                    {currentSpecification?.relations !== undefined ? elem : "ID"}
-                                </div>
-                                {currentSpecification?.relations !== undefined ? (
-                                    <CustomSelect
-                                        onChange={({ target }) => {
-                                            setModelValues(prev => {
-                                                return { ...prev, [elem]: target.value };
-                                            });
-                                        }}
-                                        apiMethod={async () => {
-                                            const field = currentSpecification.relations[elem];
+                    {model.length !== 0 &&
+                        (model.length > 1 ? (
+                            model.map(elem => {
+                                return (
+                                    <div className={styles.wrapper} key={elem}>
+                                        <div className={styles.label}>{"Выберите элемент " + elem}</div>
 
-                                            if (ITEMS_LIST.find(f => f.type === field.toLowerCase()) !== undefined) {
-                                                return await getHardwaresWithFilters(field.toLowerCase(), {}, 1, 100);
-                                            }
-                                            return await getForeigns(field);
-                                        }}
-                                    />
-                                ) : (
-                                    <Input
-                                        className={styles.inputcomponent}
-                                        onChange={({ target }) => {
-                                            setModelValues(prev => {
-                                                return { ...prev, id: target.value };
-                                            });
-                                        }}
-                                    />
-                                )}
+                                        <CustomSelect
+                                            onChange={({ target }) => {
+                                                setModelValues(prev => {
+                                                    return { ...prev, [elem]: target.value };
+                                                });
+                                            }}
+                                            apiMethod={async () => {
+                                                const field = currentSpecification.relations[elem];
+
+                                                if (
+                                                    ITEMS_LIST.find(f => f.type === field.toLowerCase()) !== undefined
+                                                ) {
+                                                    return await getHardwaresWithFilters(
+                                                        field.toLowerCase(),
+                                                        {},
+                                                        1,
+                                                        100
+                                                    );
+                                                }
+                                                return await getForeigns(field);
+                                            }}
+                                        />
+                                    </div>
+                                );
+                            })
+                        ) : (
+                            <div className={styles.wrapper} key={currentSpecification.type}>
+                                <div className={styles.label}>Выберите элемент </div>
+                                <CustomSelect
+                                    onChange={({ target }) => {
+                                        setModelValues(prev => {
+                                            return { ...prev, id: target.value };
+                                        });
+                                    }}
+                                    apiMethod={async () => {
+                                        const field = currentSpecification.type;
+
+                                        return await getForeigns(field);
+                                    }}
+                                />
                             </div>
-                        );
-                    })}
+                        ))}
                 </div>
                 {selected !== "" && (
                     <Button

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getHardware } from "../../api/configuratorAPI.js";
 import styles from "./HardwarePage.module.scss";
 import { HARDWARE_SPECIFICATIONS } from "../../utility/constants.js";
@@ -14,10 +14,15 @@ const HardwarePage = observer(() => {
     const [loading, setLoading] = useState(false);
     const [hardware, setHardware] = useState({});
     const { configurator } = useContext(Context);
+    const navigate = useNavigate();
     async function getHardwareRequest() {
         setLoading(true);
         getHardware(type, id)
             .then(res => {
+                if (!res) {
+                    navigate("/");
+                    return;
+                }
                 setHardware(res);
             })
             .catch(err => {})
@@ -28,6 +33,7 @@ const HardwarePage = observer(() => {
 
     useEffect(() => {
         getHardwareRequest();
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

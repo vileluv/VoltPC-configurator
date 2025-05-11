@@ -2,15 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./DeleteHardware.module.scss";
 import Select from "../../../../components/common/Select/index.js";
 import { ITEMS_LIST } from "../../../../utility/constants.js";
-import { createForeign, deleteForeign, deleteHardware } from "../../../../api/adminAPI.js";
+import { deleteHardware } from "../../../../api/adminAPI.js";
 import Spinner from "../../../../components/Spinner/index.js";
-import Input from "../../../../components/common/Input/index.js";
 import Button from "../../../../components/common/Button/index.js";
+import { getHardwaresWithFilters } from "../../../../api/configuratorAPI.js";
 function DeleteHardware() {
     const [selected, setSelected] = useState("");
     const [value, setValue] = useState(0);
     const [loading, setLoading] = useState(false);
-    const isFirstRender = useRef(true);
 
     return (
         <div className={styles.root}>
@@ -33,12 +32,16 @@ function DeleteHardware() {
 
                 <div className={styles.model}>
                     {selected !== "" && (
-                        <div className={styles.wrapper}>
-                            <div className={styles.label}>ID</div>
-                            <Input
-                                className={styles.inputcomponent}
+                        <div className={styles.wrapper} key={selected}>
+                            <div className={styles.label}>Выберите элемент</div>
+                            <CustomSelect
                                 onChange={({ target }) => {
                                     setValue(target.value);
+                                }}
+                                apiMethod={async () => {
+                                    const field = selected;
+
+                                    return await getHardwaresWithFilters(field.toLowerCase(), {}, 1, 100);
                                 }}
                             />
                         </div>
@@ -70,3 +73,38 @@ function DeleteHardware() {
 }
 
 export default DeleteHardware;
+function CustomSelect({ apiMethod = async () => {}, onChange = () => {}, ...props }) {
+    const [options, setOptions] = useState([]);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        async function fetchOptions() {
+            try {
+                let data = await apiMethod();
+                if (data.rows !== undefined) {
+                    data = data.rows;
+                }
+                if (isMounted) {
+                    setOptions(
+                        data.map(({ fullName, id }) => ({
+                            name: fullName,
+                            value: id,
+                        }))
+                    );
+                }
+            } catch {
+                setOptions([]);
+            }
+        }
+
+        fetchOptions();
+
+        return () => {
+            isMounted = false;
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    return <Select className={styles.inputcomponent} options={options} onChange={onChange} {...props} />;
+}
