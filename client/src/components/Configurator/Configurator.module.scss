@@ -106,6 +106,42 @@
                 font-weight: 600;
                 padding: 1em 0;
             }
+            .paymenttitle {
+                padding: 0.5em 1em;
+                font-weight: 500;
+                font-size: 1.2em;
+                border-top: 1px solid variables.$border-color;
+            }
+            .payment {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1em;
+                padding: 1em;
+
+                .active {
+                    border-color: variables.$primary-color-green !important;
+                }
+                .paymentitem {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1em;
+                    border: variables.$border-color 1px solid;
+                    padding: 1em;
+                    transition: border-color 100ms;
+                    cursor: pointer;
+
+                    &:hover {
+                        border-color: color.scale(variables.$primary-color-green, $blackness: 40%);
+                    }
+                    .title {
+                        font-size: 1.2em;
+                        font-weight: 500;
+                    }
+                    .description {
+                        font-weight: 300;
+                    }
+                }
+            }
             .modalbtn {
                 margin-top: 1em;
                 width: 10em;
